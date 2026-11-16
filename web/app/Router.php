@@ -1,0 +1,133 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App;
+
+final class Router
+{
+    private App $app;
+
+    public function __construct(App $app)
+    {
+        $this->app = $app;
+    }
+
+    public function dispatch(): string
+    {
+        $uri = $_SERVER['REQUEST_URI'] ?? '/';
+        $path = parse_url($uri, PHP_URL_PATH) ?? '/';
+        $path = trim($path, '/');
+
+        if ($path === '') {
+            return $this->home();
+        }
+
+        if ($path === 'admin') {
+            return $this->admin();
+        }
+
+        if ($path === 'api/openlist') {
+            return $this->openListApi();
+        }
+
+        return $this->notFound();
+    }
+
+    private function home(): string
+    {
+        $name = $this->app->config('app.name', 'Guihuatu Blog');
+
+        return <<<HTML
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{$name}</title>
+  <style>
+    :root { color-scheme: light dark; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; margin: 0; background: #111827; color: #f9fafb; }
+    main { max-width: 960px; margin: 0 auto; padding: 80px 20px 60px; }
+    .card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 18px; padding: 28px; }
+    a { color: #8ec5ff; }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="card">
+      <p>博客系统重构骨架</p>
+      <h1>{$name}</h1>
+      <p>此页面表示新 PHP 应用已成功启动，当前仅作为前端骨架展示。</p>
+      <ul>
+        <li><a href="/admin">进入后台</a></li>
+        <li><a href="/api/openlist">查看 OpenList 接口基线</a></li>
+      </ul>
+    </div>
+  </main>
+</body>
+</html>
+HTML;
+    }
+
+    private function admin(): string
+    {
+        return <<<HTML
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>后台入口</title>
+  <style>
+    body { font-family: sans-serif; padding: 40px; background: #f3f4f6; color: #111827; }
+    .panel { max-width: 700px; margin: 0 auto; background: white; border-radius: 12px; padding: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
+  </style>
+</head>
+<body>
+  <div class="panel">
+    <h1>后台入口</h1>
+    <p>此页面为后台管理的基础入口。</p>
+    <p>后续将接入：文章管理、导航管理、相册管理、网盘管理、配置项。</p>
+    <p><a href="/">返回首页</a></p>
+  </div>
+</body>
+</html>
+HTML;
+    }
+
+    private function openListApi(): string
+    {
+        header('Content-Type: application/json; charset=utf-8');
+
+        $client = $this->app->openListClient();
+        $items = $client->listFolder('/');
+
+        $payload = [
+            'ok' => true,
+            'source' => 'OpenList foundation',
+            'items' => $items,
+        ];
+
+        return json_encode($payload, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+    }
+
+    private function notFound(): string
+    {
+        http_response_code(404);
+
+        return <<<HTML
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>404</title>
+</head>
+<body>
+  <h1>404 Not Found</h1>
+  <p>当前页面尚未建立，请先回到首页。</p>
+  <p><a href="/">返回首页</a></p>
+</body>
+</html>
+HTML;
+    }
+}

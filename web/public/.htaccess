@@ -1,0 +1,8 @@
+RewriteEngine On
+
+# Allow direct access to the public directory only
+RewriteCond %{REQUEST_URI} !^/public/
+RewriteRule ^ index.php [QSA,L]
+
+# Optional security: block direct config access
+RewriteRule ^config/ - [F,L]
