@@ -15,8 +15,7 @@ final class PostRepository
 
     public function list(string $status = 'published', int $limit = 20): array
     {
-        $sql = 'SELECT * FROM posts WHERE status = :status ORDER BY created_at DESC LIMIT :limit';
-        $stmt = $this->database->pdo()->prepare($sql);
+        $stmt = $this->database->pdo()->prepare('SELECT * FROM posts WHERE status = :status ORDER BY created_at DESC LIMIT :limit');
         $stmt->bindValue(':status', $status, \PDO::PARAM_STR);
         $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
         $stmt->execute();
@@ -26,6 +25,7 @@ final class PostRepository
         foreach ($rows as $row) {
             $posts[] = Post::fromArray($row);
         }
+
         return $posts;
     }
 
@@ -71,6 +71,7 @@ final class PostRepository
             'visibility' => $post->visibility,
             'password_hash' => $post->passwordHash,
         ]);
+
         return (int) $this->database->pdo()->lastInsertId();
     }
 

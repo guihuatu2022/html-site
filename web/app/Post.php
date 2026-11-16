@@ -27,7 +27,7 @@ final class Post
         $post->content = (string) ($row['content'] ?? '');
         $post->status = (string) ($row['status'] ?? 'draft');
         $post->visibility = (string) ($row['visibility'] ?? 'public');
-        $post->passwordHash = isset($row['password_hash']) && $row['password_hash'] !== null ? (string) $row['password_hash'] : null;
+        $post->passwordHash = ($row['password_hash'] ?? null) !== null ? (string) $row['password_hash'] : null;
         $post->createdAt = (string) ($row['created_at'] ?? '');
         $post->updatedAt = (string) ($row['updated_at'] ?? '');
         return $post;

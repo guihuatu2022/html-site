@@ -8,9 +8,7 @@ $app = require __DIR__ . '/bootstrap.php';
 $db = new App\Database($app->config('database', []));
 App\Installer::ensureSchema($db);
 App\Installer::ensureDefaults($db);
-
 $repo = new App\PostRepository($db);
-
 $posts = $repo->list('published', 10);
 
 header('Content-Type: application/json; charset=utf-8');
