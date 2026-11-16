@@ -8,86 +8,144 @@ final class OpenListClient
 {
     private string $baseUrl;
     private string $token;
-    private string $password;
     private string $rootPath;
+    private int $timeout;
 
     public function __construct(array $config)
     {
-        $this->baseUrl = rtrim((string) ($config['base_url'] ?? 'http://localhost:5244'), '/');
-        $this->token = (string) ($config['token'] ?? '');
-        $this->password = (string) ($config['password'] ?? '');
-        $this->rootPath = (string) ($config['root_path'] ?? '/');
+        $baseUrl = trim((string) ($config['base_url'] ?? ''));
+        if ($baseUrl !== '' && !in_array(parse_url($baseUrl, PHP_URL_SCHEME), ['http', 'https'], true)) {
+            throw new \InvalidArgumentException('OpenList URL must use HTTP or HTTPS.');
+        }
+        $this->baseUrl = rtrim($baseUrl, '/');
+        $this->token = trim((string) ($config['token'] ?? ''));
+        $this->rootPath = $this->normalizeRoot((string) ($config['root_path'] ?? '/'));
+        $this->timeout = max(3, min(30, (int) ($config['timeout'] ?? 10)));
     }
 
-    public function listFolder(string $path = '/'): array
+    public function isConfigured(): bool
     {
-        $url = $this->baseUrl . '/api/fs/list';
-        $payload = [
-            'path' => $this->normalizePath($path),
-            'password' => $this->password,
-        ];
+        return $this->baseUrl !== '' && $this->token !== '';
+    }
 
-        $response = $this->request($url, $payload);
-
-        if (!isset($response['data'])) {
-            return [];
+    public function listFolder(string $relativePath = '/'): array
+    {
+        $response = $this->post('/api/fs/list', ['path' => $this->resolvePath($relativePath), 'password' => '']);
+        if (($response['code'] ?? null) !== 200 || !is_array($response['data'] ?? null)) {
+            throw new \RuntimeException((string) ($response['message'] ?? 'OpenList failed to list the directory.'));
         }
-
         return $response['data'];
     }
 
-    public function stat(string $path): ?array
+    public function probe(string $relativePath = '/'): array
     {
-        $url = $this->baseUrl . '/api/fs/get';
-        $payload = [
-            'path' => $this->normalizePath($path),
-            'password' => $this->password,
+        return $this->post('/api/fs/list', ['path' => $this->resolvePath($relativePath), 'password' => '']);
+    }
+
+    public function makeDirectory(string $relativePath): array
+    {
+        return $this->post('/api/fs/mkdir', ['path' => $this->resolvePath($relativePath)]);
+    }
+
+    public function upload(string $relativeDirectory, string $filePath, string $safeName): array
+    {
+        if (!$this->isConfigured()) {
+            throw new \RuntimeException('OpenList is not configured.');
+        }
+        if (!is_file($filePath) || !is_readable($filePath)) {
+            throw new \InvalidArgumentException('Upload source file is unavailable.');
+        }
+        $destination = $this->resolvePath(rtrim($relativeDirectory, '/') . '/' . $safeName);
+        $url = $this->baseUrl . '/api/fs/put';
+        $headers = [
+            'Authorization: ' . $this->token,
+            'File-Path: ' . $destination,
+            'Content-Type: application/octet-stream',
         ];
-
-        $response = $this->request($url, $payload);
-        return $response['data'] ?? null;
+        $handle = fopen($filePath, 'rb');
+        if ($handle === false) {
+            throw new \RuntimeException('Cannot open upload source file.');
+        }
+        try {
+            return $this->request($url, 'PUT', $handle, $headers, filesize($filePath) ?: null);
+        } finally {
+            fclose($handle);
+        }
     }
 
-    public function downloadUrl(string $path): string
+    public function resolvePath(string $relativePath): string
     {
-        $normalized = $this->normalizePath($path);
-        return $this->baseUrl . '/api/fs/get?path=' . rawurlencode($normalized) . '&password=' . rawurlencode($this->password);
+        $relative = str_replace('\\', '/', trim($relativePath));
+        $segments = [];
+        foreach (explode('/', $relative) as $segment) {
+            if ($segment === '' || $segment === '.') continue;
+            if ($segment === '..' || str_contains($segment, "\0")) {
+                throw new \InvalidArgumentException('Invalid OpenList path.');
+            }
+            $segments[] = $segment;
+        }
+        $suffix = implode('/', $segments);
+        return $this->rootPath === '/' ? '/' . $suffix : rtrim($this->rootPath, '/') . ($suffix === '' ? '' : '/' . $suffix);
     }
 
-    private function normalizePath(string $path): string
+    private function normalizeRoot(string $root): string
     {
-        $value = $path === '' ? '/' : $path;
-        $value = str_replace('\\', '/', $value);
+        $root = '/' . trim(str_replace('\\', '/', $root), '/');
+        return $root === '//' ? '/' : $root;
+    }
 
-        if ($value !== '/') {
-            $value = '/' . trim($value, '/');
+    private function post(string $endpoint, array $payload): array
+    {
+        return $this->request($this->baseUrl . $endpoint, 'POST', json_encode($payload, JSON_THROW_ON_ERROR), [
+            'Authorization: ' . $this->token,
+            'Content-Type: application/json',
+        ]);
+    }
+
+    /** @param resource|string $body */
+    private function request(string $url, string $method, mixed $body, array $headers, ?int $length = null): array
+    {
+        if (!$this->isConfigured()) {
+            throw new \RuntimeException('OpenList is not configured.');
+        }
+        if (!function_exists('curl_init')) {
+            throw new \RuntimeException('The PHP cURL extension is required for OpenList integration.');
         }
 
-        if ($this->rootPath !== '/' && strpos($value, $this->rootPath) === 0) {
-            return $value;
-        }
-
-        return $this->rootPath === '/' ? $value : $this->rootPath . trim($value, '/');
-    }
-
-    private function request(string $url, array $payload): array
-    {
-        $context = stream_context_create([
-            'http' => [
-                'method' => 'POST',
-                'header' => "Content-Type: application/json\r\nAuthorization: {$this->token}\r\n",
-                'content' => json_encode($payload, JSON_THROW_ON_ERROR),
-                'timeout' => 20,
-            ],
+        $curl = curl_init($url);
+        curl_setopt_array($curl, [
+            CURLOPT_CUSTOMREQUEST => $method,
+            CURLOPT_HTTPHEADER => $headers,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_CONNECTTIMEOUT => $this->timeout,
+            CURLOPT_TIMEOUT => $this->timeout,
+            CURLOPT_FOLLOWLOCATION => false,
+            CURLOPT_PROTOCOLS => CURLPROTO_HTTP | CURLPROTO_HTTPS,
         ]);
 
-        $body = @file_get_contents($url, false, $context);
-
-        if ($body === false || $body === '') {
-            return [];
+        if (is_resource($body)) {
+            curl_setopt($curl, CURLOPT_UPLOAD, true);
+            curl_setopt($curl, CURLOPT_INFILE, $body);
+            if ($length !== null) curl_setopt($curl, CURLOPT_INFILESIZE, $length);
+        } else {
+            curl_setopt($curl, CURLOPT_POSTFIELDS, $body);
         }
 
-        $decoded = json_decode($body, true);
-        return is_array($decoded) ? $decoded : [];
+        $responseBody = curl_exec($curl);
+        $status = (int) curl_getinfo($curl, CURLINFO_RESPONSE_CODE);
+        $error = curl_error($curl);
+        curl_close($curl);
+
+        if ($responseBody === false) {
+            throw new \RuntimeException('OpenList request failed: ' . $error);
+        }
+        $decoded = json_decode((string) $responseBody, true);
+        if (!is_array($decoded)) {
+            throw new \RuntimeException('OpenList returned an invalid response (HTTP ' . $status . ').');
+        }
+        if ($status < 200 || $status >= 300 || (isset($decoded['code']) && (int) $decoded['code'] !== 200)) {
+            throw new \RuntimeException((string) ($decoded['message'] ?? 'OpenList request failed (HTTP ' . $status . ').'));
+        }
+        return $decoded;
     }
 }
