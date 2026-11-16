@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>浮生六记 - 岁月博客</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;700&family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://npm.elemecdn.com/lxgw-wenkai-screen-webfont@1.1.0/style.css">
+<script src="https://unpkg.com/@phosphor-icons/web"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        theme: {
+          desk: '#cfc6b5',
+          spine: '#2c2a29',
+          paper: '#f7f1e3',
+          ink: '#2c2c2c',
+          red: '#8b3a3a',
+          line: '#dcd3b2'
+        }
+      },
+      fontFamily: {
+        serif: ['Noto Serif SC', 'Songti SC', 'serif'],
+        hand: ['LXGW WenKai Screen', 'sans-serif'],
+        calli: ['Ma Shan Zheng', 'cursive'],
+      }
+    }
+  }
+}
+</script>
+<style>
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background-color: #b0a68f; border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background-color: #8b3a3a; }
+::selection { background-color: #8b3a3a; color: #fff; }
+
+.tex-spine {
+  background-color: #2c2a29;
+  background-image: url("data:image/svg+xml,%3Csvg width='4' height='4' viewBox='0 0 4 4' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 3h1v1H1V3zm2-2h1v1H3V1z' fill='%23000000' fill-opacity='0.2' fill-rule='evenodd'/%3E%3C/svg%3E");
+  box-shadow: inset -5px 0 15px rgba(0,0,0,0.3);
+}
+.tex-paper {
+  background-color: #f7f1e3;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+}
+</style>
+<link rel="stylesheet" href="../assets/css/shared.css">
+<style>
+.mobile-header-fix {
+  display: flex !important;
+}
+@media (min-width: 768px) {
+  .mobile-header-fix {
+    display: none !important;
+  }
+}
+
+.toc-leader{border-bottom:2px dotted #cbbba0;flex-grow:1;margin:0 1rem 6px 1rem;opacity:0.6}.category-tag{font-family:var(--font-hand);font-size:0.9em;color:var(--accent-color);border:none;padding:0;margin-right:4px;opacity:0.9;font-weight:normal}.journal-entry{cursor:pointer}.journal-entry .entry-title-text{font-size:1.125rem;font-weight:bold;color:var(--text-main);transition:color var(--transition-base)}.journal-entry:hover .entry-title-text{color:var(--accent-color)}.entry-month{font-size:0.875rem;font-weight:bold;color:var(--accent-color);margin-bottom:1rem;letter-spacing:0.05em;opacity:0.8;font-family:var(--font-serif)}.year-section-month{padding-left:2rem;border-left:1px solid var(--line-color);margin-left:0.5rem}
+</style>
+</head>
+<body class="bg-theme-desk font-serif text-theme-ink flex justify-center min-h-screen md:p-8">
+
+<div class="w-full max-w-[1200px] flex flex-col md:flex-row md:shadow-[0_20px_50px_rgba(0,0,0,0.2)] relative md:min-h-[85vh] overflow-hidden md:overflow-visible bg-theme-paper">
+
+<header class="mobile-header-fix md:hidden flex items-center justify-between p-4 tex-spine text-[#dcd3b2] shadow-md relative z-30 shrink-0">
+  <button onclick="toggleMobileMenu()" class="p-1 focus:outline-none"><i class="ph ph-list text-2xl"></i></button>
+  <h1 class="font-calli text-2xl tracking-widest absolute left-1/2 -translate-x-1/2 mt-1">三十而立</h1>
+  <button onclick="showPasswordModal()" class="seal-btn w-7 h-7 border border-theme-red text-theme-red bg-theme-red/10 flex items-center justify-center text-[10px] font-bold focus:outline-none transition-colors">主</button>
+</header>
+
+<div id="mobile-backdrop" onclick="toggleMobileMenu()" class="fixed inset-0 bg-black/60 z-40 hidden opacity-0 transition-opacity duration-300 md:hidden"></div>
+
+<aside id="sidebar" class="fixed md:static inset-y-0 left-0 z-50 w-[240px] shrink-0 tex-spine text-gray-300 flex flex-col transform -translate-x-full md:translate-x-0 transition-transform duration-300 shadow-2xl md:shadow-none">
+  
+  <button class="md:hidden absolute top-5 right-5 text-gray-400 hover:text-white" onclick="toggleMobileMenu()">
+    <i class="ph ph-x text-2xl"></i>
+  </button>
+
+  <div class="px-6 py-8 border-b border-gray-700/30 flex flex-col items-center justify-center shrink-0">
+    <div class="flex items-center justify-between w-full mb-3">
+      <h1 class="font-calli text-3xl text-[#e8e8e8] opacity-90 drop-shadow-md tracking-widest">三十而立</h1>
+      <button onclick="showPasswordModal()" title="点击盖印" class="seal-btn hidden md:flex w-8 h-8 border-2 border-theme-red text-theme-red bg-theme-red/10 items-center justify-center text-xs font-bold rounded-sm shadow-sm transition-colors cursor-pointer select-none">主</button>
+    </div>
+    
+    <div class="w-full text-center mb-1">
+      <p class="text-xs text-[#a8a8a8] tracking-[0.4em] font-hand opacity-90">记录 · 沉淀 · 回忆</p>
+    </div>
+
+    <p class="mt-3 text-[10px] text-gray-500 tracking-[0.3em] uppercase font-serif opacity-50 w-full text-center border-t border-gray-700/30 pt-2">The Chronicle</p>
+  </div>
+
+  <nav class="flex-1 py-6 px-5 overflow-y-auto">
+    <ul class="space-y-2">
+      <li><a href="首页.html" class="nav-link"><i class="ph ph-house"></i><span class="menu-item-text">博客首页</span></a></li>
+      <li><a href="日志列表页.html" class="nav-link active"><i class="ph ph-pen-nib"></i><span class="menu-item-text">岁月日志</span></a></li>
+      <li><a href="相册列表页.html" class="nav-link"><i class="ph ph-image"></i><span class="menu-item-text">生活相册</span></a></li>
+      <li><a href="网盘列表页.html" class="nav-link"><i class="ph ph-hard-drives"></i><span class="menu-item-text">个人网盘</span></a></li>
+      <li><a href="常用导航页.html" class="nav-link"><i class="ph ph-compass"></i><span class="menu-item-text">常用导航</span></a></li>
+      <li><a href="归档页.html" class="nav-link"><i class="ph ph-archive"></i><span class="menu-item-text">文章归档</span></a></li>
+      <li><a href="留言板.html" class="nav-link"><i class="ph ph-envelope-simple"></i><span class="menu-item-text">访客留言</span></a></li>
+      <li class="admin-menu-item nav-divider"></li>
+      <li class="admin-menu-item"><a href="待办.html" class="nav-link admin-nav-link"><i class="ph ph-check-square-offset"></i><span class="menu-item-text">我的待办</span></a></li>
+      <li class="admin-menu-item"><a href="../admin/仪表盘.html" class="nav-link admin-nav-link"><i class="ph ph-gear"></i><span class="menu-item-text">后台管理</span></a></li>
+    </ul>
+  </nav>
+
+  <div class="p-5 text-[10px] text-gray-500 text-center border-t border-gray-700/20 shrink-0">
+    <p>&copy; 2024 - 2064</p>
+    <p class="mt-1 font-serif opacity-70">朝花夕拾 · 岁月静好</p>
+  </div>
+</aside>
+
+<main class="flex-1 tex-paper flex flex-col overflow-hidden shadow-[inset_15px_0_20px_-10px_rgba(0,0,0,0.1)] relative">
+
+<div class="flex-1 overflow-y-auto p-6 md:p-12">
+<header class="page-header"><div class="page-header-title"><h2>浮生六记</h2><p>Journal & Essays</p></div><div class="page-header-seal"><span class="seal-bg-text">Journal</span><div class="seal-icon" style="transform:rotate(-6deg)">录</div></div></header>
+<div class="filter-bar"><div class="filter-group"><span class="filter-label">分类索引：</span><span class="index-link active" data-filter="all">全部</span><span class="filter-separator">/</span><span class="index-link" data-filter="随笔">生活随笔</span><span class="filter-separator">/</span><span class="index-link" data-filter="技术">技术笔记</span><span class="filter-separator">/</span><span class="index-link" data-filter="摄影">影像记忆</span></div><div class="relative"><i class="ph ph-magnifying-glass absolute left-0 top-1/2 -translate-y-1/2 text-[#a8a8a8]"></i><input type="text" placeholder="检索往事..." class="vintage-search pl-6"></div></div>
+<details open class="mb-6"><summary><div class="section-header flex items-center gap-3 text-xl font-bold text-theme-ink mb-6"><i class="ph ph-caret-right icon-arrow text-theme-red"></i><span>卷三 · 二零二四年</span><span class="text-sm font-normal text-gray-500">&nbsp;甲辰年</span><span class="text-sm font-normal text-theme-red opacity-70 font-hand">&nbsp;(共 12 篇)</span></div></summary>
+<div class="year-section-month"><div class="mb-8"><h4 class="entry-month">五月 · 孟夏</h4>
+<ul class="space-y-4" style="list-style:none;padding:0"><li class="journal-entry" data-category="随笔"><a href="日志详情页.html" class="flex items-end justify-between w-full no-underline"><div class="bg-theme-paper pr-3 shrink-0 flex items-center"><span class="category-tag">【随笔】</span><span class="entry-title-text">三十岁的第一个清晨</span></div><span class="toc-leader"></span><span class="text-sm font-serif text-theme-red font-bold bg-theme-paper pl-3 shrink-0">五月廿十</span></a></li>
+<li class="journal-entry entry-encrypted" data-category="摄影"><div class="flex items-end justify-between w-full"><div class="bg-theme-paper pr-3 shrink-0 flex items-center"><span class="category-tag">【摄影】</span><span class="entry-title-text">胶片里的秘密</span><i class="ph ph-lock-key status-icon status-lock-key" title="加密内容"></i></div><span class="toc-leader"></span><span class="text-sm font-serif text-theme-red font-bold bg-theme-paper pl-3 shrink-0">五月十八</span></div></li></ul></div>
+<div class="mb-8"><h4 class="entry-month">四月 · 孟夏</h4>
+<ul class="space-y-4" style="list-style:none;padding:0"><li class="journal-entry entry-private" data-category="技术"><div class="flex items-end justify-between w-full"><div class="bg-theme-paper pr-3 shrink-0 flex items-center"><span class="category-tag">【技术】</span><span class="entry-title-text">服务器私钥备份</span><i class="ph ph-eye-slash status-icon status-private" title="仅自己可见"></i></div><span class="toc-leader"></span><span class="text-sm font-serif text-theme-red font-bold bg-theme-paper pl-3 shrink-0">四月初五</span></div></li>
+<li class="journal-entry" data-category="摄影"><a href="日志详情页.html" class="flex items-end justify-between w-full no-underline"><div class="bg-theme-paper pr-3 shrink-0 flex items-center"><span class="category-tag">【摄影】</span><span class="entry-title-text">胶片里的老街</span></div><span class="toc-leader"></span><span class="text-sm font-serif text-theme-red font-bold bg-theme-paper pl-3 shrink-0">四月廿八</span></a></li></ul></div></div></details>
+<details class="mb-6"><summary><div class="section-header flex items-center gap-3 text-xl font-bold text-[#5d5d5d] mb-4"><i class="ph ph-caret-right icon-arrow text-[#a89f91]"></i><span>卷二 · 二零二三年</span><span class="text-sm font-normal text-gray-400">&nbsp;癸卯年</span><span class="text-sm font-normal text-theme-red opacity-70 font-hand">&nbsp;(共 8 篇)</span></div></summary>
+<div class="year-section-month"><div class="mb-8"><h4 class="entry-month">腊月 · 岁末</h4><ul class="space-y-4" style="list-style:none;padding:0"><li class="journal-entry" data-category="随笔"><div class="flex items-end justify-between w-full"><div class="bg-theme-paper pr-3 shrink-0 flex items-center"><span class="category-tag">【随笔】</span><span class="entry-title-text" style="color:#5d5d5d">再见，二十九岁</span></div><span class="toc-leader"></span><span class="text-sm font-serif text-[#a89f91] font-bold bg-theme-paper pl-3 shrink-0">腊月三十</span></div></li></ul></div></div></details>
+</div>
+<div class="pagination"><span class="pagination-link disabled">上一页</span><span class="pagination-link active">【 壹 】</span><span class="pagination-link">下一页</span></div>
+</main>
+
+</div>
+
+<script>
+const sidebar = document.getElementById('sidebar');
+const backdrop = document.getElementById('mobile-backdrop');
+
+function toggleMobileMenu() {
+  const isClosed = sidebar.classList.contains('-translate-x-full');
+  if (isClosed) {
+    backdrop.classList.remove('hidden');
+    setTimeout(() => backdrop.classList.remove('opacity-0'), 10);
+    sidebar.classList.remove('-translate-x-full');
+  } else {
+    backdrop.classList.add('opacity-0');
+    sidebar.classList.add('-translate-x-full');
+    setTimeout(() => backdrop.classList.add('hidden'), 300);
+  }
+}
+
+/* 分类筛选 */
+(function(){
+  var links = document.querySelectorAll('.index-link[data-filter]');
+  var allEntries = document.querySelectorAll('.journal-entry[data-category]');
+  links.forEach(function(link){
+    link.addEventListener('click', function(e){
+      e.preventDefault();
+      var cat = this.getAttribute('data-filter');
+      links.forEach(function(l){ l.classList.remove('active'); });
+      this.classList.add('active');
+      allEntries.forEach(function(entry){
+        if(cat === 'all' || entry.getAttribute('data-category') === cat){
+          entry.style.display = '';
+        } else {
+          entry.style.display = 'none';
+        }
+      });
+      /* 更新每月标题计数 */
+      document.querySelectorAll('.entry-month').forEach(function(h4){
+        var count = h4.closest('.mb-8').querySelectorAll('.journal-entry[data-category]').length;
+        var visibleCount = 0;
+        h4.closest('.mb-8').querySelectorAll('.journal-entry[data-category]').forEach(function(e){
+          if(e.style.display !== 'none') visibleCount++;
+        });
+        var paren = h4.closest('.mb-8');
+        var monthSection = h4.closest('.year-section-month') || paren.parentElement;
+        if(visibleCount === 0){
+          paren.style.display = 'none';
+        } else {
+          paren.style.display = '';
+        }
+      });
+      /* 更新年份sections */
+      document.querySelectorAll('details .year-section-month').forEach(function(ysm){
+        var hasVisible = false;
+        ysm.querySelectorAll('.mb-8').forEach(function(mb){
+          if(mb.style.display !== 'none') hasVisible = true;
+        });
+        ysm.closest('details').style.display = hasVisible ? '' : 'none';
+      });
+    });
+  });
+})();
+</script>
+
+<div id="password-modal" class="modal-overlay hidden"><div class="modal-content modal-paper-bg"><h3 class="modal-title font-calligraphy">加盖私印</h3><p class="modal-subtitle">请输入主人印泥密码</p><input id="password-input" type="password" class="modal-password-input" placeholder="···" autocomplete="off"><div class="modal-actions"><button id="password-cancel" class="btn btn-outline">取消</button><button id="password-submit" class="btn btn-primary">盖印</button></div><p class="modal-hint">默认密码: TheChronicle2024</p></div></div>
+<div id="encrypt-password-modal" class="modal-overlay hidden"><div class="album-unlock-modal modal-paper-bg"><div class="corner-border corner-tl"></div><div class="corner-border corner-tr"></div><div class="corner-border corner-bl"></div><div class="corner-border corner-br"></div><h3 class="modal-title font-calligraphy">密文启封</h3><p id="encrypt-title" class="modal-subtitle">加密内容</p><input id="encrypt-input" type="password" class="underline-input" placeholder="请输入口令..."><button class="unlock-btn" id="encrypt-submit"><span class="btn-text">启封</span><span class="btn-text-hover">阅</span></button><button class="close-btn" id="encrypt-cancel"><i class="ph ph-x"></i></button></div></div>
+
+<script src="../assets/js/shared.js"></script>
+</body>
+</html>

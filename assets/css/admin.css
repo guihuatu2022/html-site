@@ -1,0 +1,410 @@
+/* ===================================================================
+   "三十而立" 博客 — 后台管理专用组件
+   依赖 shared.css 中定义的 --变量、.btn、.form-input、.card 等基础类
+   =================================================================== */
+
+/* -------------------------------------------------------------------
+   1. 统计卡片网格
+   ------------------------------------------------------------------- */
+.admin-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid var(--line-color);
+  padding: 1.25rem;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-base);
+}
+
+.stat-card:hover {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: #bfa57d;
+}
+
+.stat-label {
+  font-family: var(--font-hand);
+  font-size: 0.8rem;
+  color: var(--text-hint);
+  margin-bottom: 6px;
+}
+
+.stat-value {
+  font-family: var(--font-serif);
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: var(--text-main);
+  line-height: 1;
+}
+
+.stat-sub {
+  font-size: 0.75rem;
+  color: #bfa57d;
+  margin-top: 6px;
+  font-family: var(--font-hand);
+}
+
+/* -------------------------------------------------------------------
+   2. 管理表格
+   ------------------------------------------------------------------- */
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border: 1px solid var(--line-color);
+  font-size: 0.9rem;
+}
+
+.admin-table th {
+  background: #f7f1e3;
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  padding: 10px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--line-color);
+}
+
+.admin-table td {
+  padding: 10px 14px;
+  font-family: var(--font-hand);
+  font-size: 0.85rem;
+  color: #444;
+  border-bottom: 1px solid #f0ebe0;
+}
+
+.admin-table tr:last-child td { border-bottom: none; }
+.admin-table tr:hover td { background: rgba(139, 58, 58, 0.015); }
+
+/* -------------------------------------------------------------------
+   3. 编辑器工具栏
+   ------------------------------------------------------------------- */
+.editor-toolbar {
+  display: flex;
+  gap: 4px;
+  padding: 8px 10px;
+  background: #f7f1e3;
+  border: 1px solid var(--line-color);
+  border-bottom: none;
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+  flex-wrap: wrap;
+}
+
+.editor-toolbar button {
+  background: #fff;
+  border: 1px solid var(--line-color);
+  padding: 5px 9px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-family: var(--font-serif);
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  transition: all var(--transition-fast);
+}
+
+.editor-toolbar button:hover { border-color: var(--accent-color); color: var(--accent-color); }
+
+.editor-body {
+  border: 1px solid var(--line-color);
+  border-top: none;
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+}
+
+.editor-body textarea {
+  width: 100%;
+  border: none;
+  padding: 1rem;
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  line-height: 1.8;
+  resize: vertical;
+  min-height: 400px;
+  outline: none;
+  background: #fff;
+  color: var(--text-main);
+}
+
+/* -------------------------------------------------------------------
+   4. 上传区域
+   ------------------------------------------------------------------- */
+.upload-zone {
+  border: 2px dashed var(--line-color);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.upload-zone:hover {
+  border-color: var(--accent-color);
+  background: rgba(139, 58, 58, 0.02);
+}
+
+.upload-zone .upload-icon {
+  font-size: 2.2rem;
+  color: #bfa57d;
+  margin-bottom: 6px;
+}
+
+.upload-zone .upload-text {
+  font-family: var(--font-hand);
+  color: var(--text-hint);
+  font-size: 0.85rem;
+}
+
+.upload-preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 0.75rem;
+}
+
+.upload-preview-item {
+  width: 72px;
+  height: 72px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid var(--line-color);
+  position: relative;
+}
+
+.upload-preview-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.upload-preview-item .remove-preview {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-full);
+  width: 18px;
+  height: 18px;
+  font-size: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+/* -------------------------------------------------------------------
+   5. 文件预览区
+   ------------------------------------------------------------------- */
+.file-preview-area {
+  background: rgba(0, 0, 0, 0.02);
+  border: 1px dashed var(--line-color);
+  border-radius: var(--radius-md);
+  min-height: 260px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.file-preview-area img {
+  max-width: 100%;
+  max-height: 400px;
+  object-fit: contain;
+}
+
+.file-preview-area video {
+  max-width: 100%;
+  max-height: 400px;
+}
+
+/* -------------------------------------------------------------------
+   6. 管理区标题 & 内联表单
+   ------------------------------------------------------------------- */
+.admin-section-title {
+  font-family: var(--font-serif);
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: var(--text-main);
+  border-left: 3px solid var(--accent-color);
+  padding-left: 10px;
+  margin: 1.5rem 0 1rem 0;
+}
+
+.inline-form {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.inline-form .form-group { margin-bottom: 0; flex: 1; min-width: 150px; }
+
+/* -------------------------------------------------------------------
+   7. 路径预览
+   ------------------------------------------------------------------- */
+.path-preview {
+  display: inline-block;
+  padding: 3px 10px;
+  background: rgba(74, 107, 101, 0.08);
+  color: #4a6b65;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-hand);
+  font-size: 0.8rem;
+  margin-top: 6px;
+}
+
+/* -------------------------------------------------------------------
+   8. 文件夹树 & 文件浏览器
+   ------------------------------------------------------------------- */
+.folder-tree {
+  font-family: var(--font-hand);
+  font-size: 0.9rem;
+  line-height: 2;
+}
+
+.folder-tree .tree-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 8px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.folder-tree .tree-item:hover { background: rgba(139, 58, 58, 0.05); color: var(--accent-color); }
+.folder-tree .tree-item.selected { background: rgba(139, 58, 58, 0.08); color: var(--accent-color); font-weight: 600; }
+.folder-tree .tree-item i { color: #bfa57d; }
+
+.file-browser {
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid var(--line-color);
+  border-radius: var(--radius-md);
+  max-height: 320px;
+  overflow-y: auto;
+  font-family: var(--font-hand);
+  font-size: 0.85rem;
+}
+
+.file-browser .fb-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  border-bottom: 1px solid #f0ebe0;
+}
+
+.file-browser .fb-item:last-child { border-bottom: none; }
+.file-browser .fb-item:hover { background: rgba(139, 58, 58, 0.04); }
+
+.file-browser .fb-item.selected {
+  background: rgba(139, 58, 58, 0.08);
+  color: var(--accent-color);
+  font-weight: 600;
+}
+
+.file-browser .fb-item .fb-icon { color: #bfa57d; font-size: 1.1rem; flex-shrink: 0; }
+
+.file-browser .fb-breadcrumb {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--line-color);
+  font-size: 0.78rem;
+  color: var(--text-hint);
+  background: #fdfbf6;
+}
+
+.file-browser .fb-breadcrumb span {
+  color: var(--accent-color);
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+.file-browser .fb-breadcrumb span:hover { text-decoration: underline; }
+
+/* -------------------------------------------------------------------
+   9. 批量操作栏
+   ------------------------------------------------------------------- */
+.batch-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  background: rgba(139, 58, 58, 0.05);
+  border: 1px dashed var(--line-color);
+  border-radius: var(--radius-md);
+  margin-bottom: 0.75rem;
+  font-family: var(--font-hand);
+  font-size: 0.8rem;
+  color: var(--text-hint);
+}
+
+.batch-bar .batch-count { color: var(--accent-color); font-weight: bold; }
+
+/* -------------------------------------------------------------------
+   10. 连通性面板
+   ------------------------------------------------------------------- */
+.connectivity-panel {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.75rem;
+}
+
+.connectivity-card {
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid var(--line-color);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.connectivity-card .conn-icon {
+  font-size: 1.5rem;
+  color: #bfa57d;
+  flex-shrink: 0;
+}
+
+.connectivity-card .conn-info { flex: 1; min-width: 0; }
+.connectivity-card .conn-name { font-family: var(--font-serif); font-weight: 600; font-size: 0.85rem; color: var(--text-main); }
+.connectivity-card .conn-detail { font-family: var(--font-hand); font-size: 0.72rem; color: var(--text-hint); margin-top: 2px; }
+
+.status-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+  margin-right: 4px;
+}
+
+.status-dot.online { background: #4a6b65; box-shadow: 0 0 6px rgba(74, 107, 101, 0.4); }
+.status-dot.offline { background: #a93226; box-shadow: 0 0 6px rgba(169, 50, 38, 0.3); }
+.status-dot.checking { background: #d4ac0d; animation: status-pulse 1s infinite; }
+
+@keyframes status-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* -------------------------------------------------------------------
+   11. 响应式
+   ------------------------------------------------------------------- */
+@media (max-width: 768px) {
+  .admin-stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .admin-table { font-size: 0.78rem; }
+  .admin-table th, .admin-table td { padding: 8px 10px; }
+  .editor-toolbar { gap: 2px; }
+  .editor-toolbar button { padding: 4px 7px; font-size: 0.7rem; }
+  .connectivity-panel { grid-template-columns: 1fr 1fr; }
+  .inline-form { flex-direction: column; }
+  .inline-form .form-group { min-width: auto; width: 100%; }
+}

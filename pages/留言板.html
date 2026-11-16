@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>访客留言 - 岁月博客</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;700&amp;family=Ma+Shan+Zheng&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://npm.elemecdn.com/lxgw-wenkai-screen-webfont@1.1.0/style.css">
+<script src="https://unpkg.com/@phosphor-icons/web"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        theme: {
+          desk: '#cfc6b5',
+          spine: '#2c2a29',
+          paper: '#f7f1e3',
+          ink: '#2c2c2c',
+          red: '#8b3a3a',
+          line: '#dcd3b2'
+        }
+      },
+      fontFamily: {
+        serif: ['Noto Serif SC', 'Songti SC', 'serif'],
+        hand: ['LXGW Wenkai Screen', 'sans-serif'],
+        calli: ['Ma Shan Zheng', 'cursive'],
+      }
+    }
+  }
+}
+</script>
+<style>
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background-color: #b0a68f; border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background-color: #8b3a3a; }
+::selection { background-color: #8b3a3a; color: #fff; }
+
+.tex-spine {
+  background-color: #2c2a29;
+  background-image: url("data:image/svg+xml,%3Csvg width='4' height='4' viewBox='0 0 4 4' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 3h1v1H1V3zm2-2h1v1H3V1z' fill='%23000000' fill-opacity='0.2' fill-rule='evenodd'/%3E%3C/svg%3E");
+  box-shadow: inset -5px 0 15px rgba(0,0,0,0.3);
+}
+.tex-paper {
+  background-color: #f7f1e3;
+  background-image: url("data:image/svg+xml/%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+}
+</style>
+<link rel="stylesheet" href="../assets/css/shared.css">
+<style>
+.mobile-header-fix {
+  display: flex !important;
+}
+@media (min-width: 768px) {
+  .mobile-header-fix {
+    display: none !important;
+  }
+}
+
+.host-message{background:#fff;border:1px solid var(--line-color);padding:2rem;margin-bottom:3rem;position:relative;box-shadow:var(--shadow-sm)}.host-message::before{content:"";position:absolute;top:-10px;left:50%;transform:translateX(-50%) rotate(-1deg);width:120px;height:30px;background:rgba(139,58,58,0.15);backdrop-filter:blur(1px);box-shadow:0 1px 2px rgba(0,0,0,0.1)}.host-content{font-family:var(--font-hand);font-size:1.1rem;line-height:1.8;color:#444;text-align:center}.host-signature{margin-top:1.5rem;text-align:right;font-family:var(--font-calli);color:var(--accent-color);font-size:1.2rem}.message-list{display:flex;flex-direction:column;gap:1.5rem}.message-card{display:flex;gap:1rem;padding-bottom:1.5rem;border-bottom:1px dashed var(--line-color)}.message-card:last-child{border-bottom:none}.floor-tag{font-family:var(--font-serif);font-size:0.75rem;color:var(--line-color);margin-left:10px}
+
+.comment-input{width:100%;padding:6px 0;border:none;border-bottom:1px dashed var(--line-color);background:transparent;font-family:var(--font-hand);font-size:1rem;color:var(--text-main);outline:none;transition:border-color var(--transition-base)}.comment-input::placeholder{color:#b0a89a;font-family:var(--font-serif);font-style:italic}.comment-input:focus{border-bottom-style:solid;border-bottom-color:var(--accent-color)}
+</style>
+</head>
+<body class="bg-theme-desk font-serif text-theme-ink flex justify-center min-h-screen md:p-8">
+
+<div class="w-full max-w-[1200px] flex flex-col md:flex-row md:shadow-[0_20px_50px_rgba(0,0,0,0.2)] relative md:min-h-[85vh] overflow-hidden md:overflow-visible bg-theme-paper">
+
+<header class="mobile-header-fix md:hidden flex items-center justify-between p-4 tex-spine text-[#dcd3b2] shadow-md relative z-30 shrink-0">
+  <button onclick="toggleMobileMenu()" class="p-1 focus:outline-none"><i class="ph ph-list text-2xl"></i></button>
+  <h1 class="font-calli text-2xl tracking-widest absolute left-1/2 -translate-x-1/2 mt-1">三十而立</h1>
+  <button onclick="showPasswordModal()" class="seal-btn w-7 h-7 border border-theme-red text-theme-red bg-theme-red/10 flex items-center justify-center text-[10px] font-bold focus:outline-none transition-colors">主</button>
+</header>
+
+<div id="mobile-backdrop" onclick="toggleMobileMenu()" class="fixed inset-0 bg-black/60 z-40 hidden opacity-0 transition-opacity duration-300 md:hidden"></div>
+
+<aside id="sidebar" class="fixed md:static inset-y-0 left-0 z-50 w-[240px] shrink-0 tex-spine text-gray-300 flex flex-col transform -translate-x-full md:translate-x-0 transition-transform duration-300 shadow-2xl md:shadow-none">
+  
+  <button class="md:hidden absolute top-5 right-5 text-gray-400 hover:text-white" onclick="toggleMobileMenu()">
+    <i class="ph ph-x text-2xl"></i>
+  </button>
+
+  <div class="px-6 py-8 border-b border-gray-700/30 flex flex-col items-center justify-center shrink-0">
+    <div class="flex items-center justify-between w-full mb-3">
+      <h1 class="font-calli text-3xl text-[#e8e8e8] opacity-90 drop-shadow-md tracking-widest">三十而立</h1>
+      <button onclick="showPasswordModal()" title="点击盖印" class="seal-btn hidden md:flex w-8 h-8 border-2 border-theme-red text-theme-red bg-theme-red/10 items-center justify-center text-xs font-bold rounded-sm shadow-sm transition-colors cursor-pointer select-none">主</button>
+    </div>
+    
+    <div class="w-full text-center mb-1">
+      <p class="text-xs text-[#a8a8a8] tracking-[0.4em] font-hand opacity-90">记录 · 沉淀 · 回忆</p>
+    </div>
+
+    <p class="mt-3 text-[10px] text-gray-500 tracking-[0.3em] uppercase font-serif opacity-50 w-full text-center border-t border-gray-700/30 pt-2">The Chronicle</p>
+  </div>
+
+  <nav class="flex-1 py-6 px-5 overflow-y-auto">
+    <ul class="space-y-2">
+      <li><a href="首页.html" class="nav-link"><i class="ph ph-house"></i><span class="menu-item-text">博客首页</span></a></li>
+      <li><a href="日志列表页.html" class="nav-link"><i class="ph ph-pen-nib"></i><span class="menu-item-text">岁月日志</span></a></li>
+      <li><a href="相册列表页.html" class="nav-link"><i class="ph ph-image"></i><span class="menu-item-text">生活相册</span></a></li>
+      <li><a href="网盘列表页.html" class="nav-link"><i class="ph ph-hard-drives"></i><span class="menu-item-text">个人网盘</span></a></li>
+      <li><a href="常用导航页.html" class="nav-link"><i class="ph ph-compass"></i><span class="menu-item-text">常用导航</span></a></li>
+      <li><a href="归档页.html" class="nav-link"><i class="ph ph-archive"></i><span class="menu-item-text">文章归档</span></a></li>
+      <li><a href="留言板.html" class="nav-link active"><i class="ph ph-envelope-simple"></i><span class="menu-item-text">访客留言</span></a></li>
+      <li class="admin-menu-item nav-divider"></li>
+      <li class="admin-menu-item"><a href="待办.html" class="nav-link admin-nav-link"><i class="ph ph-check-square-offset"></i><span class="menu-item-text">我的待办</span></a></li>
+      <li class="admin-menu-item"><a href="../admin/仪表盘.html" class="nav-link admin-nav-link"><i class="ph ph-gear"></i><span class="menu-item-text">后台管理</span></a></li>
+    </ul>
+  </nav>
+
+  <div class="p-5 text-[10px] text-gray-500 text-center border-t border-gray-700/20 shrink-0">
+    <p>&copy; 2024 - 2064</p>
+    <p class="mt-1 font-serif opacity-70">朝花夕拾 · 岁月静好</p>
+  </div>
+</aside>
+
+<main class="flex-1 tex-paper p-6 md:p-12 overflow-y-auto shadow-[inset_15px_0_20px_-10px_rgba(0,0,0,0.1)]">
+<header class="mb-8 border-b border-[#dcd3b2] pb-6"><h2 class="text-3xl font-bold text-[#2c2c2c] mb-2 font-serif">鸿雁传书</h2><p class="text-sm text-[#999] font-hand">有朋自远方来，不亦乐乎</p></header>
+<div class="host-message"><div class="host-content"><p>来者皆是客，不必拘礼。</p><p>留下一言半语，便是缘分。</p></div><div class="host-signature">—— 主人敬上</div></div>
+<div class="mb-12">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-4">
+<input type="text" class="comment-input" placeholder="昵称 *" required>
+<input type="email" class="comment-input" placeholder="邮箱 *" required>
+</div>
+<textarea class="letter-paper h-28 mb-4" placeholder="雁过留声，人过留名..."></textarea>
+<div class="flex items-center justify-between">
+<label class="checkbox-wrapper"><input type="checkbox"><span>悄悄话，仅主人可见</span></label>
+<button class="btn-post"></button>
+</div></div>
+<div class="message-list">
+<div class="message-card"><div class="comment-avatar comment-avatar-admin">主</div><div class="comment-body"><div class="comment-header"><span class="comment-author">三十而立</span><span class="comment-time">2024年5月20日<span class="floor-tag">#1</span></span></div><div class="comment-text">欢迎大家来到我的数字庭院。这里没有算法推荐，没有红点通知，只有一片安静的自留地。</div></div></div>
+<div class="message-card"><div class="comment-avatar">云</div><div class="comment-body"><div class="comment-header"><span class="comment-author">云中漫步</span><span class="comment-time">3天前<span class="floor-tag">#2</span></span></div><div class="comment-text">偶然路过，被这个博客的气质吸引了。现在这样安静不浮躁的地方真的不多了。</div><div class="card-comment admin-only mt-3 text-sm"><span class="font-calligraphy text-xs text-[#8b3a3a] block">主人回复</span><p class="font-hand text-[#5d5d5d] mt-1 mb-0">感谢来访。安静是这个时代最奢侈的东西，希望这里能给你片刻的宁静。</p></div><button class="comment-reply-btn admin-only mt-2">回复</button></div></div>
+<div class="message-card"><div class="comment-avatar">竹</div><div class="comment-body"><div class="comment-header"><span class="comment-author">竹林听雨</span><span class="comment-time">5天前<span class="floor-tag">#3</span></span></div><div class="secret-message"><span class="secret-mask"><i class="ph ph-lock"></i> 这是一条悄悄话，仅主人可见</span><span class="secret-content">博主你好，想请教一下这个博客是怎么搭建的？方便分享一下技术栈吗？</span></div></div></div>
+</div>
+</main></div>
+
+<div id="password-modal" class="modal-overlay hidden"><div class="modal-content modal-paper-bg"><h3 class="modal-title font-calligraphy">加盖私印</h3><p class="modal-subtitle">请输入主人印泥密码</p><input id="password-input" type="password" class="modal-password-input" placeholder="···" autocomplete="off"><div class="modal-actions"><button id="password-cancel" class="btn btn-outline">取消</button><button id="password-submit" class="btn btn-primary">盖印</button></div><p class="modal-hint">默认密码: TheChronicle2024</p></div></div>
+
+<script>
+const sidebar = document.getElementById('sidebar');
+const backdrop = document.getElementById('mobile-backdrop');
+
+function toggleMobileMenu() {
+  const isClosed = sidebar.classList.contains('-translate-x-full');
+  if (isClosed) {
+    backdrop.classList.remove('hidden');
+    setTimeout(() => backdrop.classList.remove('opacity-0'), 10);
+    sidebar.classList.remove('-translate-x-full');
+  } else {
+    backdrop.classList.add('opacity-0');
+    sidebar.classList.add('-translate-x-full');
+    setTimeout(() => backdrop.classList.add('hidden'), 300);
+  }
+}
+</script>
+<script src="../assets/js/shared.js"></script></body></html>

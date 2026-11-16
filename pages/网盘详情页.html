@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>万卷藏书</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;700&family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://npm.elemecdn.com/lxgw-wenkai-screen-webfont@1.1.0/style.css">
+<script src="https://unpkg.com/@phosphor-icons/web"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        theme: {
+          desk: '#cfc6b5',
+          spine: '#2c2a29',
+          paper: '#f7f1e3',
+          ink: '#2c2c2c',
+          red: '#8b3a3a',
+          line: '#dcd3b2'
+        }
+      },
+      fontFamily: {
+        serif: ['Noto Serif SC', 'Songti SC', 'serif'],
+        hand: ['LXGW Wenkai Screen', 'sans-serif'],
+        calli: ['Ma Shan Zheng', 'cursive'],
+      }
+    }
+  }
+}
+&lt;/script&gt;
+&lt;style&gt;
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background-color: #b0a68f; border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background-color: #8b3a3a; }
+::selection { background-color: #8b3a3a; color: #fff; }
+
+.tex-spine {
+  background-color: #2c2a29;
+  background-image: url("data:image/svg+xml,%3Csvg width='4' height='4' viewBox='0 0 4 4' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 3h1v1H1V3zm2-2h1v1H3V1z' fill='%23000000' fill-opacity='0.2' fill-rule='evenodd'/%3E%3C/svg%3E");
+  box-shadow: inset -5px 0 15px rgba(0,0,0,0.3);
+}
+.tex-paper {
+  background-color: #f7f1e3;
+  background-image: url("data:image/svg+xml/%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+}
+</style>
+<link rel="stylesheet" href="../assets/css/shared.css">
+<style>
+.mobile-header-fix {
+  display: flex !important;
+}
+@media (min-width: 768px) {
+  .mobile-header-fix {
+    display: none !important;
+  }
+}
+
+/* 预览画框 — 模拟装裱画心 */
+.preview-frame {
+  background: #fafaf7;
+  border: 1px solid var(--line-color);
+  border-radius: var(--radius-lg);
+  position: relative;
+  overflow: hidden;
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 0 60px rgba(139,58,58,0.03);
+}
+.preview-frame::after {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  border: 1px dashed rgba(220,211,178,0.5);
+  border-radius: 1px;
+  pointer-events: none;
+  z-index: 1;
+}
+.preview-inner {
+  position: relative;
+  z-index: 2;
+  padding: 2rem;
+  text-align: center;
+  width: 100%;
+}
+.preview-inner img {
+  max-width: 100%;
+  max-height: 420px;
+  object-fit: contain;
+  box-shadow: 2px 3px 12px rgba(0,0,0,0.12);
+  background: #fff;
+  padding: 6px;
+}
+.preview-inner video {
+  max-width: 100%;
+  max-height: 100%;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 2px;
+  display: block;
+  position: absolute;
+  inset: 0;
+}
+
+/* 文件类型标签 */
+.type-tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--line-color);
+  margin-bottom: 0;
+  flex-wrap: wrap;
+}
+.type-tab {
+  padding: 8px 18px;
+  font-family: var(--font-hand);
+  font-size: 0.8rem;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: var(--text-hint);
+  transition: all var(--transition-base);
+  position: relative;
+  bottom: -1px;
+  letter-spacing: 0.03em;
+}
+.type-tab:hover { color: var(--text-muted); }
+.type-tab.active {
+  color: var(--accent-color);
+  font-weight: bold;
+  border-bottom: 2px solid var(--accent-color);
+}
+
+/* 文件信息卡片 */
+.info-card {
+  background: #fff;
+  border: 1px solid var(--line-color);
+  padding: 0;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.info-card-header {
+  padding: 1rem 1.5rem;
+  font-family: var(--font-serif);
+  font-weight: bold;
+  font-size: 0.95rem;
+  color: var(--text-main);
+  background: rgba(247,241,227,0.5);
+  border-bottom: 1px solid var(--line-color);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.info-card-body { padding: 1rem 1.5rem 1.5rem; }
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 0.55rem 0;
+  border-bottom: 1px dotted rgba(220,211,178,0.4);
+  font-size: 0.88rem;
+}
+.info-row:last-child { border-bottom: none; }
+.info-label {
+  font-family: var(--font-serif);
+  color: var(--text-hint);
+  font-size: 0.8rem;
+  flex-shrink: 0;
+}
+.info-value {
+  font-family: var(--font-hand);
+  color: #444;
+  text-align: right;
+  word-break: break-all;
+}
+
+/* 操作按钮区 */
+.action-bar {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.download-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 28px;
+  background: var(--accent-color);
+  color: #fff;
+  border-radius: var(--radius-md);
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  border: none;
+  text-decoration: none;
+  box-shadow: 0 2px 8px rgba(139,58,58,0.2);
+}
+.download-btn:hover {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(139,58,58,0.3);
+}
+.download-btn .file-size-tag {
+  font-size: 0.7rem;
+  opacity: 0.7;
+  font-weight: normal;
+  font-family: var(--font-hand);
+  margin-left: 4px;
+}
+
+/* 空预览 */
+.preview-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  color: #c0b8a8;
+}
+.preview-empty .empty-icon-big {
+  font-size: 4rem;
+  color: #dcd3b2;
+}
+.preview-empty .empty-title {
+  font-family: var(--font-hand);
+  font-size: 1rem;
+  color: var(--text-hint);
+}
+.preview-empty .empty-hint {
+  font-family: var(--font-serif);
+  font-size: 0.8rem;
+  color: #c0b8a8;
+}
+
+/* 页面头部 */
+.page-hero {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  border-bottom: 1px solid var(--line-color);
+  padding-bottom: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+.page-hero-left h2 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--text-main);
+  margin: 0;
+  line-height: 1.3;
+  word-break: break-all;
+}
+.page-hero-left .file-type-badge {
+  display: inline-block;
+  margin-top: 4px;
+}
+.flex-spacer { flex: 1; min-width: 24px; }
+
+@media (max-width: 768px) {
+  .info-grid { grid-template-columns: 1fr; }
+  .type-tabs { gap: 2px; }
+  .type-tab { padding: 6px 12px; font-size: 0.75rem; }
+  .preview-inner { padding: 1rem; }
+  .preview-frame { min-height: 220px; }
+  .preview-inner img { max-height: 280px; }
+}
+</style>
+</head>
+<body class="bg-theme-desk font-serif text-theme-ink flex justify-center min-h-screen md:p-8">
+
+<div class="w-full max-w-[1200px] flex flex-col md:flex-row md:shadow-[0_20px_50px_rgba(0,0,0,0.2)] relative md:min-h-[85vh] overflow-hidden md:overflow-visible bg-theme-paper">
+
+<header class="mobile-header-fix md:hidden flex items-center justify-between p-4 tex-spine text-[#dcd3b2] shadow-md relative z-30 shrink-0">
+  <button onclick="toggleMobileMenu()" class="p-1 focus:outline-none"><i class="ph ph-list text-2xl"></i></button>
+  <h1 class="font-calli text-2xl tracking-widest absolute left-1/2 -translate-x-1/2 mt-1">三十而立</h1>
+  <button onclick="showPasswordModal()" class="seal-btn w-7 h-7 border border-theme-red text-theme-red bg-theme-red/10 flex items-center justify-center text-[10px] font-bold focus:outline-none transition-colors">主</button>
+</header>
+
+<div id="mobile-backdrop" onclick="toggleMobileMenu()" class="fixed inset-0 bg-black/60 z-40 hidden opacity-0 transition-opacity duration-300 md:hidden"></div>
+
+<aside id="sidebar" class="fixed md:static inset-y-0 left-0 z-50 w-[240px] shrink-0 tex-spine text-gray-300 flex flex-col transform -translate-x-full md:translate-x-0 transition-transform duration-300 shadow-2xl md:shadow-none">
+  
+  <button class="md:hidden absolute top-5 right-5 text-gray-400 hover:text-white" onclick="toggleMobileMenu()">
+    <i class="ph ph-x text-2xl"></i>
+  </button>
+
+  <div class="px-6 py-8 border-b border-gray-700/30 flex flex-col items-center justify-center shrink-0">
+    <div class="flex items-center justify-between w-full mb-3">
+      <h1 class="font-calli text-3xl text-[#e8e8e8] opacity-90 drop-shadow-md tracking-widest">三十而立</h1>
+      <button onclick="showPasswordModal()" title="点击盖印" class="seal-btn hidden md:flex w-8 h-8 border-2 border-theme-red text-theme-red bg-theme-red/10 items-center justify-center text-xs font-bold rounded-sm shadow-sm transition-colors cursor-pointer select-none">主</button>
+    </div>
+    
+    <div class="w-full text-center mb-1">
+      <p class="text-xs text-[#a8a8a8] tracking-[0.4em] font-hand opacity-90">记录 · 沉淀 · 回忆</p>
+    </div>
+
+    <p class="mt-3 text-[10px] text-gray-500 tracking-[0.3em] uppercase font-serif opacity-50 w-full text-center border-t border-gray-700/30 pt-2">The Chronicle</p>
+  </div>
+
+  <nav class="flex-1 py-6 px-5 overflow-y-auto">
+    <ul class="space-y-2">
+      <li><a href="首页.html" class="nav-link"><i class="ph ph-house"></i><span class="menu-item-text">博客首页</span></a></li>
+      <li><a href="日志列表页.html" class="nav-link"><i class="ph ph-pen-nib"></i><span class="menu-item-text">岁月日志</span></a></li>
+      <li><a href="相册列表页.html" class="nav-link"><i class="ph ph-image"></i><span class="menu-item-text">生活相册</span></a></li>
+      <li><a href="网盘列表页.html" class="nav-link active"><i class="ph ph-hard-drives"></i><span class="menu-item-text">个人网盘</span></a></li>
+      <li><a href="常用导航页.html" class="nav-link"><i class="ph ph-compass"></i><span class="menu-item-text">常用导航</span></a></li>
+      <li><a href="归档页.html" class="nav-link"><i class="ph ph-archive"></i><span class="menu-item-text">文章归档</span></a></li>
+      <li><a href="留言板.html" class="nav-link"><i class="ph ph-envelope-simple"></i><span class="menu-item-text">访客留言</span></a></li>
+      <li class="admin-menu-item nav-divider"></li>
+      <li class="admin-menu-item"><a href="待办.html" class="nav-link admin-nav-link"><i class="ph ph-check-square-offset"></i><span class="menu-item-text">我的待办</span></a></li>
+      <li class="admin-menu-item"><a href="../admin/仪表盘.html" class="nav-link admin-nav-link"><i class="ph ph-gear"></i><span class="menu-item-text">后台管理</span></a></li>
+    </ul>
+  </nav>
+
+  <div class="p-5 text-[10px] text-gray-500 text-center border-t border-gray-700/20 shrink-0">
+    <p>&copy; 2024 - 2064</p>
+    <p class="mt-1 font-serif opacity-70">朝花夕拾 · 岁月静好</p>
+  </div>
+</aside>
+
+<main class="flex-1 tex-paper p-6 md:p-12 overflow-y-auto shadow-[inset_15px_0_20px_-10px_rgba(0,0,0,0.1)]">
+
+<div class="breadcrumb"><a href="网盘列表页.html" class="back-link"><i class="ph ph-arrow-left"></i> 返回网盘列表</a></div>
+
+<div class="page-hero">
+<div class="page-hero-left">
+<h2 id="hero-filename">—</h2>
+<div class="file-type-badge"><span class="tag tag-red" id="hero-type">—</span></div>
+</div>
+<div class="flex-spacer"></div>
+<div class="text-right relative flex-shrink-0">
+<span class="text-3xl font-light text-[#cfcfcf] absolute -top-4 right-10 select-none opacity-50 z-0 font-serif">File</span>
+<div class="w-9 h-9 border-2 border-[#8b3a3a] rounded-sm flex items-center justify-center text-[#8b3a3a] text-xs font-bold transform -rotate-6 opacity-80 z-10 relative shadow-sm font-serif" style="mix-blend-mode:multiply">卷</div>
+</div></div>
+
+<div class="grid grid-cols-1 lg:grid-cols-7 gap-6 mb-8">
+<div class="lg:col-span-5">
+<div class="type-tabs mb-0" id="tab-bar">
+<button class="type-tab" data-type="zip" onclick="switchFilePreview(this,'zip')"><i class="ph ph-file-zip mr-1"></i>压缩包</button>
+<button class="type-tab" data-type="image" onclick="switchFilePreview(this,'image')"><i class="ph ph-file-image mr-1"></i>图片</button>
+<button class="type-tab" data-type="video" onclick="switchFilePreview(this,'video')"><i class="ph ph-file-video mr-1"></i>视频</button>
+<button class="type-tab" data-type="pdf" onclick="switchFilePreview(this,'pdf')"><i class="ph ph-file-text mr-1"></i>PDF</button>
+<button class="type-tab" data-type="doc" onclick="switchFilePreview(this,'doc')"><i class="ph ph-file-text mr-1"></i>文档</button>
+<button class="type-tab" data-type="txt" onclick="switchFilePreview(this,'txt')"><i class="ph ph-file-text mr-1"></i>文本</button>
+</div>
+<div class="preview-frame" id="preview-area">
+<div class="preview-inner"><div class="preview-empty"><i class="ph ph-file empty-icon-big"></i><span class="empty-title">加载中...</span></div></div>
+</div></div>
+<div class="lg:col-span-2">
+<div class="info-card">
+<div class="info-card-header"><i class="ph ph-info"></i> 卷宗详情</div>
+<div class="info-card-body">
+<div class="info-row"><span class="info-label">文件名</span><span class="info-value" id="info-name">—</span></div>
+<div class="info-row"><span class="info-label">大小</span><span class="info-value" id="info-size">—</span></div>
+<div class="info-row"><span class="info-label">分类</span><span class="info-value" id="info-cat">—</span></div>
+<div class="info-row"><span class="info-label">上传</span><span class="info-value" id="info-date">—</span></div>
+<div class="info-row"><span class="info-label">下载</span><span class="info-value" id="info-dl">—</span></div>
+</div></div>
+<div class="action-bar mt-4">
+<a href="#" class="download-btn" id="download-btn"><i class="ph ph-download-simple text-lg"></i><span>下载</span><span class="file-size-tag" id="download-size"></span></a>
+<button class="btn btn-outline btn-lg h-10"><i class="ph ph-share-network"></i> 分享</button>
+</div></div></div>
+
+</main>
+</div>
+
+<div id="password-modal" class="modal-overlay hidden"><div class="modal-content modal-paper-bg"><h3 class="modal-title font-calligraphy">加盖私印</h3><p class="modal-subtitle">请输入主人印泥密码</p><input id="password-input" type="password" class="modal-password-input" placeholder="···" autocomplete="off"><div class="modal-actions"><button id="password-cancel" class="btn btn-outline">取消</button><button id="password-submit" class="btn btn-primary">盖印</button></div><p class="modal-hint">默认密码: TheChronicle2024</p></div></div>
+
+<script>
+const sidebar = document.getElementById('sidebar');
+const backdrop = document.getElementById('mobile-backdrop');
+
+function toggleMobileMenu() {
+  const isClosed = sidebar.classList.contains('-translate-x-full');
+  if (isClosed) {
+    backdrop.classList.remove('hidden');
+    setTimeout(() => backdrop.classList.remove('opacity-0'), 10);
+    sidebar.classList.remove('-translate-x-full');
+  } else {
+    backdrop.classList.add('opacity-0');
+    sidebar.classList.add('-translate-x-full');
+    setTimeout(() => backdrop.classList.add('hidden'), 300);
+  }
+}
+</script>
+<script>
+(function(){
+var p=new URLSearchParams(location.search);
+var name=p.get('name')||'未知文件';
+var size=p.get('size')||'未知';
+var type=p.get('type')||'file';
+var cat=p.get('cat')||'未分类';
+var date=p.get('date')||'—';
+var dl=p.get('dl')||'0';
+
+document.title=name+' - 万卷藏书';
+document.getElementById('hero-filename').textContent=name;
+document.getElementById('info-name').textContent=name;
+document.getElementById('info-size').textContent=size;
+document.getElementById('info-cat').textContent=cat;
+document.getElementById('info-date').textContent=date;
+document.getElementById('info-dl').textContent=dl+' 次';
+document.getElementById('download-size').textContent='('+size+')';
+
+var typeMap={zip:{label:'压缩包',tag:'tag-red'},image:{label:'图片',tag:'tag-red'},video:{label:'视频',tag:'tag-red'},pdf:{label:'PDF',tag:'tag-red'},doc:{label:'文档',tag:'tag-red'},txt:{label:'文本',tag:'tag-red'}};
+var t=typeMap[type];
+if(t){document.getElementById('hero-type').textContent=t.label;document.getElementById('hero-type').className='tag '+t.tag}
+else{document.getElementById('hero-type').textContent=type}
+
+// Activate default tab in type-tabs
+var tabs=document.querySelectorAll('.type-tab');
+var activeTab=null;
+tabs.forEach(function(tab){
+  if(tab.getAttribute('data-type')===type){tab.classList.add('active');activeTab=tab}
+});
+if(!activeTab&&tabs.length){tabs[0].classList.add('active');activeTab=tabs[0]}
+
+// Render preview
+var previews={
+  image:'<div class="preview-inner"><img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800" alt="preview"></div>',
+  video:'<div class="preview-inner" style="padding:0"><video controls><source src="#" type="video/mp4">您的浏览器不支持视频预览</video></div>',
+  pdf:'<div class="preview-inner"><div class="preview-empty"><i class="ph ph-file-text empty-icon-big"></i><span class="empty-title">PDF 文件建议下载后查看</span><span class="empty-hint">在线预览依赖浏览器支持</span></div></div>',
+  doc:'<div class="preview-inner"><div class="preview-empty"><i class="ph ph-file-text empty-icon-big"></i><span class="empty-title">文档文件建议下载后查看</span><span class="empty-hint">不支持在线预览</span></div></div>',
+  txt:'<div class="preview-inner"><div class="preview-empty"><i class="ph ph-file-text empty-icon-big"></i><span class="empty-title">文本文件 — 建议下载后用编辑器打开</span><span class="empty-hint">'+(size+(size.indexOf('KB')!==-1?'，内容较短':'，内容较大'))+'</span></div></div>',
+  zip:'<div class="preview-inner"><div class="preview-empty"><i class="ph ph-file-zip empty-icon-big"></i><span class="empty-title">压缩文件 — 无法在线预览</span><span class="empty-hint">请下载后解压查看</span></div></div>'
+};
+var area=document.getElementById('preview-area');
+if(previews[type]){area.innerHTML=previews[type]}
+else{area.innerHTML='<div class="preview-inner"><div class="preview-empty"><i class="ph ph-file empty-icon-big"></i><span class="empty-title">'+name+'</span><span class="empty-hint">请下载后查看</span></div></div>'}
+
+window.switchFilePreview=function(btn,sel){
+  document.querySelectorAll('.type-tab').forEach(function(tb){tb.classList.remove('active')});
+  btn.classList.add('active');
+  if(previews[sel]){area.innerHTML=previews[sel]}
+};
+})();
+</script>
+<script src="../assets/js/shared.js"></script>
+</body></html>

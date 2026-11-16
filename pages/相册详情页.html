@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>五渔村的夏天 - 光影流年</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;700&family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://npm.elemecdn.com/lxgw-wenkai-screen-webfont@1.1.0/style.css">
+<script src="https://unpkg.com/@phosphor-icons/web"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        theme: {
+          desk: '#cfc6b5',
+          spine: '#2c2a29',
+          paper: '#f7f1e3',
+          ink: '#2c2c2c',
+          red: '#8b3a3a',
+          line: '#dcd3b2'
+        }
+      },
+      fontFamily: {
+        serif: ['Noto Serif SC', 'Songti SC', 'serif'],
+        hand: ['LXGW Wenkai Screen', 'sans-serif'],
+        calli: ['Ma Shan Zheng', 'cursive'],
+      }
+    }
+  }
+}
+</script>
+<style>
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background-color: #b0a68f; border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background-color: #8b3a3a; }
+::selection { background-color: #8b3a3a; color: #fff; }
+
+.tex-spine {
+  background-color: #2c2a29;
+  background-image: url("data:image/svg+xml,%3Csvg width='4' height='4' viewBox='0 0 4 4' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 3h1v1H1V3zm2-2h1v1H3V1z' fill='%23000000' fill-opacity='0.2' fill-rule='evenodd'/%3E%3C/svg%3E");
+  box-shadow: inset -5px 0 15px rgba(0,0,0,0.3);
+}
+.tex-paper {
+  background-color: #f7f1e3;
+  background-image: url("data:image/svg+xml/%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+}
+</style>
+<link rel="stylesheet" href="../assets/css/shared.css">
+<style>
+.mobile-header-fix {
+  display: flex !important;
+}
+@media (min-width: 768px) {
+  .mobile-header-fix {
+    display: none !important;
+  }
+}
+
+.album-intro{border-left:4px solid var(--accent-color);padding-left:1.5rem;margin-bottom:3rem;font-family:var(--font-hand);color:var(--text-muted);font-size:1.1rem;line-height:1.8}.single-photo{background:#fff;padding:10px 10px 35px 10px;box-shadow:0 4px 6px rgba(0,0,0,0.1);transition:all 0.3s;position:relative;cursor:zoom-in;break-inside:avoid;margin-bottom:2rem}.single-photo:hover{transform:scale(1.05) rotate(0deg)!important;box-shadow:0 10px 20px rgba(0,0,0,0.2);z-index:20}.tape-corner{position:absolute;width:40px;height:100px;background:rgba(220,210,190,0.4);top:-20px;left:-10px;transform:rotate(-45deg);z-index:5;backdrop-filter:blur(1px);box-shadow:0 1px 2px rgba(0,0,0,0.1)}.photo-meta{font-family:var(--font-hand);color:#444;font-size:0.85rem;text-align:right;margin-top:8px;padding-right:4px}.photo-grid{column-count:3;column-gap:2rem}
+.comment-input{width:100%;padding:6px 0;border:none;border-bottom:1px dashed var(--line-color);background:transparent;font-family:var(--font-hand);font-size:1rem;color:var(--text-main);outline:none;transition:border-color var(--transition-base)}.comment-input::placeholder{color:#b0a89a;font-family:var(--font-serif);font-style:italic}.comment-input:focus{border-bottom-style:solid;border-bottom-color:var(--accent-color)}
+@media(max-width:1024px){.photo-grid{column-count:2}}@media(max-width:640px){.photo-grid{column-count:1}}
+</style>
+</head>
+<body class="bg-theme-desk font-serif text-theme-ink flex justify-center min-h-screen md:p-8">
+
+<div class="w-full max-w-[1200px] flex flex-col md:flex-row md:shadow-[0_20px_50px_rgba(0,0,0,0.2)] relative md:min-h-[85vh] overflow-hidden md:overflow-visible bg-theme-paper">
+
+<header class="mobile-header-fix md:hidden flex items-center justify-between p-4 tex-spine text-[#dcd3b2] shadow-md relative z-30 shrink-0">
+  <button onclick="toggleMobileMenu()" class="p-1 focus:outline-none"><i class="ph ph-list text-2xl"></i></button>
+  <h1 class="font-calli text-2xl tracking-widest absolute left-1/2 -translate-x-1/2 mt-1">三十而立</h1>
+  <button onclick="showPasswordModal()" class="seal-btn w-7 h-7 border border-theme-red text-theme-red bg-theme-red/10 flex items-center justify-center text-[10px] font-bold focus:outline-none transition-colors">主</button>
+</header>
+
+<div id="mobile-backdrop" onclick="toggleMobileMenu()" class="fixed inset-0 bg-black/60 z-40 hidden opacity-0 transition-opacity duration-300 md:hidden"></div>
+
+<aside id="sidebar" class="fixed md:static inset-y-0 left-0 z-50 w-[240px] shrink-0 tex-spine text-gray-300 flex flex-col transform -translate-x-full md:translate-x-0 transition-transform duration-300 shadow-2xl md:shadow-none">
+  
+  <button class="md:hidden absolute top-5 right-5 text-gray-400 hover:text-white" onclick="toggleMobileMenu()">
+    <i class="ph ph-x text-2xl"></i>
+  </button>
+
+  <div class="px-6 py-8 border-b border-gray-700/30 flex flex-col items-center justify-center shrink-0">
+    <div class="flex items-center justify-between w-full mb-3">
+      <h1 class="font-calli text-3xl text-[#e8e8e8] opacity-90 drop-shadow-md tracking-widest">三十而立</h1>
+      <button onclick="showPasswordModal()" title="点击盖印" class="seal-btn hidden md:flex w-8 h-8 border-2 border-theme-red text-theme-red bg-theme-red/10 items-center justify-center text-xs font-bold rounded-sm shadow-sm transition-colors cursor-pointer select-none">主</button>
+    </div>
+    
+    <div class="w-full text-center mb-1">
+      <p class="text-xs text-[#a8a8a8] tracking-[0.4em] font-hand opacity-90">记录 · 沉淀 · 回忆</p>
+    </div>
+
+    <p class="mt-3 text-[10px] text-gray-500 tracking-[0.3em] uppercase font-serif opacity-50 w-full text-center border-t border-gray-700/30 pt-2">The Chronicle</p>
+  </div>
+
+  <nav class="flex-1 py-6 px-5 overflow-y-auto">
+    <ul class="space-y-2">
+      <li><a href="首页.html" class="nav-link"><i class="ph ph-house"></i><span class="menu-item-text">博客首页</span></a></li>
+      <li><a href="日志列表页.html" class="nav-link"><i class="ph ph-pen-nib"></i><span class="menu-item-text">岁月日志</span></a></li>
+      <li><a href="相册列表页.html" class="nav-link active"><i class="ph ph-image"></i><span class="menu-item-text">生活相册</span></a></li>
+      <li><a href="网盘列表页.html" class="nav-link"><i class="ph ph-hard-drives"></i><span class="menu-item-text">个人网盘</span></a></li>
+      <li><a href="常用导航页.html" class="nav-link"><i class="ph ph-compass"></i><span class="menu-item-text">常用导航</span></a></li>
+      <li><a href="归档页.html" class="nav-link"><i class="ph ph-archive"></i><span class="menu-item-text">文章归档</span></a></li>
+      <li><a href="留言板.html" class="nav-link"><i class="ph ph-envelope-simple"></i><span class="menu-item-text">访客留言</span></a></li>
+      <li class="admin-menu-item nav-divider"></li>
+      <li class="admin-menu-item"><a href="待办.html" class="nav-link admin-nav-link"><i class="ph ph-check-square-offset"></i><span class="menu-item-text">我的待办</span></a></li>
+      <li class="admin-menu-item"><a href="../admin/仪表盘.html" class="nav-link admin-nav-link"><i class="ph ph-gear"></i><span class="menu-item-text">后台管理</span></a></li>
+    </ul>
+  </nav>
+
+  <div class="p-5 text-[10px] text-gray-500 text-center border-t border-gray-700/20 shrink-0">
+    <p>&copy; 2024 - 2064</p>
+    <p class="mt-1 font-serif opacity-70">朝花夕拾 · 岁月静好</p>
+  </div>
+</aside>
+
+<main class="flex-1 tex-paper p-6 md:p-12 overflow-y-auto shadow-[inset_15px_0_20px_-10px_rgba(0,0,0,0.1)] relative">
+
+<header class="mb-8 border-b border-theme-line pb-6 relative"><a href="相册列表页.html" class="back-link"><i class="ph ph-arrow-left"></i> 返回相册列表</a><h2 class="text-3xl font-bold text-theme-ink mb-2 font-serif">五渔村的夏天</h2><div class="flex items-center gap-6 text-sm text-[#999] font-hand"><span><i class="ph ph-calendar-blank mr-1"></i>2024年5月</span><span><i class="ph ph-image mr-1"></i>18 张照片</span><span><i class="ph ph-map-pin mr-1"></i>意大利 · 五渔村</span></div><div class="admin-only absolute top-0 right-0 flex gap-2"><a href="../admin/相册管理.html" class="text-xs text-[#999] hover:text-theme-red transition-colors font-serif flex items-center gap-1"><i class="ph ph-pencil-simple"></i> 管理相册</a></div></header>
+<div class="album-intro"><p>那年夏天，我们沿着利古里亚海岸线一路向南。五渔村的彩色房子像积木一样堆在悬崖上，海风里带着柠檬和罗勒的味道。我用一台老富士胶片机，拍下了这些永远不会褪色的记忆。</p></div>
+<div class="photo-grid">
+<div class="single-photo" style="transform:rotate(-2deg)" data-title="悬崖上的彩色房子" data-desc="Manarola 的经典视角，黄昏时分的光线最温柔" data-camera="Fujifilm X-T5" data-lens="XF 23mm f/1.4 R" data-aperture="f/4.0" data-shutter="1/250s" data-iso="200" data-focal="23mm" onclick="openLightbox(this)"><div class="tape-corner"></div><img src="https://images.unsplash.com/photo-1534445867742-43195f401b6c?w=500&h=700&fit=crop" alt="悬崖彩色房子" class="w-full object-cover"><div class="photo-meta">Manarola · 18:42</div></div>
+<div class="single-photo" style="transform:rotate(1.5deg)" data-title="海港的清晨" data-desc="渔港里停泊的小船，被晨光照得发亮" data-camera="Fujifilm X-T5" data-lens="XF 16-55mm f/2.8" data-aperture="f/5.6" data-shutter="1/500s" data-iso="400" data-focal="35mm" onclick="openLightbox(this)"><img src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=500&h=400&fit=crop" alt="海港清晨" class="w-full object-cover"><div class="photo-meta">Riomaggiore · 06:15</div></div>
+<div class="single-photo" style="transform:rotate(-3deg)" data-title="柠檬树下的午餐" data-desc="路边小餐馆，老板自己种的柠檬比拳头还大" data-camera="Fujifilm X-T5" data-lens="XF 23mm f/1.4 R" data-aperture="f/1.4" data-shutter="1/1000s" data-iso="160" data-focal="23mm" onclick="openLightbox(this)"><img src="https://images.unsplash.com/photo-1598300042247-d088f8c3a922?w=500&h=400&fit=crop" alt="柠檬树" class="w-full object-cover"><div class="photo-meta">Monterosso · 12:30</div></div>
+<div class="single-photo" style="transform:rotate(0.5deg)" data-title="通往海边的石阶" data-desc="数不清爬了多少级台阶，但每一个转角都是风景" data-camera="Fujifilm X-T5" data-lens="XF 16-55mm f/2.8" data-aperture="f/4.5" data-shutter="1/320s" data-iso="800" data-focal="16mm" onclick="openLightbox(this)"><img src="https://images.unsplash.com/photo-1555881400-74d7acaacd9b?w=500&h=600&fit=crop" alt="石阶" class="w-full object-cover"><div class="photo-meta">Vernazza · 15:20</div></div>
+<div class="single-photo" style="transform:rotate(-1deg)" data-title="日落时分" data-desc="最后一抹金色洒在海面上，整个村子都安静下来" data-camera="Fujifilm X-T5" data-lens="XF 56mm f/1.2 R" data-aperture="f/2.8" data-shutter="1/125s" data-iso="640" data-focal="56mm" onclick="openLightbox(this)"><img src="https://images.unsplash.com/photo-1505118380757-91f5f5632de0?w=500&h=400&fit=crop" alt="日落" class="w-full object-cover"><div class="photo-meta">Manarola · 19:50</div></div>
+<div class="single-photo" style="transform:rotate(2deg)" data-title="再见五渔村" data-desc="火车缓缓驶离，我在车窗里按下最后一次快门" data-camera="Fujifilm X-T5" data-lens="XF 23mm f/1.4 R" data-aperture="f/5.6" data-shutter="1/500s" data-iso="200" data-focal="23mm" onclick="openLightbox(this)"><img src="https://images.unsplash.com/photo-1473496169904-658ba7c44d8a?w=500&h=400&fit=crop" alt="告别" class="w-full object-cover"><div class="photo-meta">La Spezia · 08:00</div></div></div>
+<section class="comment-section"><h3 class="comment-section-title"><i class="ph ph-chat-circle-text text-theme-red"></i> 评论 <span class="text-sm text-[#999] font-hand font-normal">(2)</span></h3>
+<div class="comment-list"><div class="comment-item"><div class="comment-avatar">海</div><div class="comment-body"><div class="comment-header"><span class="comment-author">海边旅人</span><span class="comment-time">1周前</span></div><p class="comment-text">五渔村的色彩太美了，每一张都像明信片！</p></div></div>
+<div class="comment-item"><div class="comment-avatar">摄</div><div class="comment-body"><div class="comment-header"><span class="comment-author">摄影小白</span><span class="comment-time">2周前</span></div><p class="comment-text">请问是用什么相机拍的？色调太有感觉了。</p><button class="comment-reply-btn admin-only" onclick="this.nextElementSibling.classList.toggle('open')">回复</button><div class="admin-reply-box admin-only"><textarea class="letter-paper h-16 text-sm" placeholder="写下回复..."></textarea><button class="btn btn-primary btn-sm mt-2">发送</button></div><div class="card-comment admin-only mt-2 ml-2"><span class="font-calligraphy text-xs text-theme-red block">主人回复</span><p class="font-hand text-[#5d5d5d] text-sm mt-1 mb-0">谢谢！用的是富士 X-T5 + 23mm f/1.4。</p></div></div></div></div>
+<div class="card p-6">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-4">
+<input type="text" class="comment-input" placeholder="昵称 *" required>
+<input type="email" class="comment-input" placeholder="邮箱 *" required>
+</div>
+<textarea class="letter-paper h-24 mb-3" placeholder="写下你的评论..."></textarea>
+<div class="flex justify-end"><button class="btn-post"></button></div>
+</div></section>
+</main>
+
+</div>
+
+<script>
+const sidebar = document.getElementById('sidebar');
+const backdrop = document.getElementById('mobile-backdrop');
+
+function toggleMobileMenu() {
+  const isClosed = sidebar.classList.contains('-translate-x-full');
+  if (isClosed) {
+    backdrop.classList.remove('hidden');
+    setTimeout(() => backdrop.classList.remove('opacity-0'), 10);
+    sidebar.classList.remove('-translate-x-full');
+  } else {
+    backdrop.classList.add('opacity-0');
+    sidebar.classList.add('-translate-x-full');
+    setTimeout(() => backdrop.classList.add('hidden'), 300);
+  }
+}
+</script>
+
+<div id="lightbox" class="lightbox hidden fixed inset-0 z-[2000] flex items-center justify-center" style="background:rgba(0,0,0,0.92)">
+<div class="lightbox-stage">
+<div class="lightbox-img-area">
+<button class="lightbox-nav lightbox-nav-prev" onclick="lightboxPrev()"><i class="ph ph-caret-left"></i></button>
+<img src="" alt="">
+<button class="lightbox-nav lightbox-nav-next" onclick="lightboxNext()"><i class="ph ph-caret-right"></i></button>
+<span class="lightbox-hint">← → 切换 &nbsp;|&nbsp; ESC 关闭</span>
+</div>
+<div class="lightbox-info">
+<div class="lightbox-info-header">
+<div class="lightbox-title"></div>
+<button class="lightbox-close" onclick="closeLightbox()"><i class="ph ph-x"></i></button>
+</div>
+<div class="lightbox-desc"></div>
+<div class="lightbox-exif"></div>
+<div class="spacer"></div>
+<div class="lightbox-counter">1 / 6</div>
+</div>
+</div>
+</div>
+<div id="password-modal" class="modal-overlay hidden"><div class="modal-content modal-paper-bg"><h3 class="modal-title font-calligraphy">加盖私印</h3><p class="modal-subtitle">请输入主人印泥密码</p><input id="password-input" type="password" class="modal-password-input" placeholder="···" autocomplete="off"><div class="modal-actions"><button id="password-cancel" class="btn btn-outline">取消</button><button id="password-submit" class="btn btn-primary">盖印</button></div><p class="modal-hint">默认密码: TheChronicle2024</p></div></div>
+<script src="../assets/js/shared.js"></script>
+</body>
+</html>

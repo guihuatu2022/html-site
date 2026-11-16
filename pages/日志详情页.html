@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>三十岁的第一个清晨 - 浮生六记</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;700&family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://npm.elemecdn.com/lxgw-wenkai-screen-webfont@1.1.0/style.css">
+<script src="https://unpkg.com/@phosphor-icons/web"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        theme: {
+          desk: '#cfc6b5',
+          spine: '#2c2a29',
+          paper: '#f7f1e3',
+          ink: '#2c2c2c',
+          red: '#8b3a3a',
+          line: '#dcd3b2'
+        }
+      },
+      fontFamily: {
+        serif: ['Noto Serif SC', 'Songti SC', 'serif'],
+        hand: ['LXGW Wenkai Screen', 'sans-serif'],
+        calli: ['Ma Shan Zheng', 'cursive'],
+      }
+    }
+  }
+}
+</script>
+<style>
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background-color: #b0a68f; border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background-color: #8b3a3a; }
+::selection { background-color: #8b3a3a; color: #fff; }
+
+.tex-spine {
+  background-color: #2c2a29;
+  background-image: url("data:image/svg+xml,%3Csvg width='4' height='4' viewBox='0 0 4 4' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 3h1v1H1V3zm2-2h1v1H3V1z' fill='%23000000' fill-opacity='0.2' fill-rule='evenodd'/%3E%3C/svg%3E");
+  box-shadow: inset -5px 0 15px rgba(0,0,0,0.3);
+}
+.tex-paper {
+  background-color: #f7f1e3;
+  background-image: url("data:image/svg+xml/%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+}
+</style>
+<link rel="stylesheet" href="../assets/css/shared.css">
+<style>
+.mobile-header-fix {
+  display: flex !important;
+}
+@media (min-width: 768px) {
+  .mobile-header-fix {
+    display: none !important;
+  }
+}
+
+.comment-input {
+  width: 100%;
+  padding: 6px 0;
+  border: none;
+  border-bottom: 1px dashed var(--line-color);
+  background: transparent;
+  font-family: var(--font-hand);
+  font-size: 1rem;
+  color: var(--text-main);
+  outline: none;
+  transition: border-color var(--transition-base);
+}
+.comment-input::placeholder {
+  color: #b0a89a;
+  font-family: var(--font-serif);
+  font-style: italic;
+}
+.comment-input:focus {
+  border-bottom-style: solid;
+  border-bottom-color: var(--accent-color);
+}
+</style>
+</head>
+<body class="bg-theme-desk font-serif text-theme-ink flex justify-center min-h-screen md:p-8">
+
+<div class="w-full max-w-[1200px] flex flex-col md:flex-row md:shadow-[0_20px_50px_rgba(0,0,0,0.2)] relative md:min-h-[85vh] overflow-hidden md:overflow-visible bg-theme-paper">
+
+<header class="mobile-header-fix md:hidden flex items-center justify-between p-4 tex-spine text-[#dcd3b2] shadow-md relative z-30 shrink-0">
+  <button onclick="toggleMobileMenu()" class="p-1 focus:outline-none"><i class="ph ph-list text-2xl"></i></button>
+  <h1 class="font-calli text-2xl tracking-widest absolute left-1/2 -translate-x-1/2 mt-1">三十而立</h1>
+  <button onclick="showPasswordModal()" class="seal-btn w-7 h-7 border border-theme-red text-theme-red bg-theme-red/10 flex items-center justify-center text-[10px] font-bold focus:outline-none transition-colors">主</button>
+</header>
+
+<div id="mobile-backdrop" onclick="toggleMobileMenu()" class="fixed inset-0 bg-black/60 z-40 hidden opacity-0 transition-opacity duration-300 md:hidden"></div>
+
+<aside id="sidebar" class="fixed md:static inset-y-0 left-0 z-50 w-[240px] shrink-0 tex-spine text-gray-300 flex flex-col transform -translate-x-full md:translate-x-0 transition-transform duration-300 shadow-2xl md:shadow-none">
+  
+  <button class="md:hidden absolute top-5 right-5 text-gray-400 hover:text-white" onclick="toggleMobileMenu()">
+    <i class="ph ph-x text-2xl"></i>
+  </button>
+
+  <div class="px-6 py-8 border-b border-gray-700/30 flex flex-col items-center justify-center shrink-0">
+    <div class="flex items-center justify-between w-full mb-3">
+      <h1 class="font-calli text-3xl text-[#e8e8e8] opacity-90 drop-shadow-md tracking-widest">三十而立</h1>
+      <button onclick="showPasswordModal()" title="点击盖印" class="seal-btn hidden md:flex w-8 h-8 border-2 border-theme-red text-theme-red bg-theme-red/10 items-center justify-center text-xs font-bold rounded-sm shadow-sm transition-colors cursor-pointer select-none">主</button>
+    </div>
+    
+    <div class="w-full text-center mb-1">
+      <p class="text-xs text-[#a8a8a8] tracking-[0.4em] font-hand opacity-90">记录 · 沉淀 · 回忆</p>
+    </div>
+
+    <p class="mt-3 text-[10px] text-gray-500 tracking-[0.3em] uppercase font-serif opacity-50 w-full text-center border-t border-gray-700/30 pt-2">The Chronicle</p>
+  </div>
+
+  <nav class="flex-1 py-6 px-5 overflow-y-auto">
+    <ul class="space-y-2">
+      <li><a href="首页.html" class="nav-link"><i class="ph ph-house"></i><span class="menu-item-text">博客首页</span></a></li>
+      <li><a href="日志列表页.html" class="nav-link active"><i class="ph ph-pen-nib"></i><span class="menu-item-text">岁月日志</span></a></li>
+      <li><a href="相册列表页.html" class="nav-link"><i class="ph ph-image"></i><span class="menu-item-text">生活相册</span></a></li>
+      <li><a href="网盘列表页.html" class="nav-link"><i class="ph ph-hard-drives"></i><span class="menu-item-text">个人网盘</span></a></li>
+      <li><a href="常用导航页.html" class="nav-link"><i class="ph ph-compass"></i><span class="menu-item-text">常用导航</span></a></li>
+      <li><a href="归档页.html" class="nav-link"><i class="ph ph-archive"></i><span class="menu-item-text">文章归档</span></a></li>
+      <li><a href="留言板.html" class="nav-link"><i class="ph ph-envelope-simple"></i><span class="menu-item-text">访客留言</span></a></li>
+      <li class="admin-menu-item nav-divider"></li>
+      <li class="admin-menu-item"><a href="待办.html" class="nav-link admin-nav-link"><i class="ph ph-check-square-offset"></i><span class="menu-item-text">我的待办</span></a></li>
+      <li class="admin-menu-item"><a href="../admin/仪表盘.html" class="nav-link admin-nav-link"><i class="ph ph-gear"></i><span class="menu-item-text">后台管理</span></a></li>
+    </ul>
+  </nav>
+
+  <div class="p-5 text-[10px] text-gray-500 text-center border-t border-gray-700/20 shrink-0">
+    <p>&copy; 2024 - 2064</p>
+    <p class="mt-1 font-serif opacity-70">朝花夕拾 · 岁月静好</p>
+  </div>
+</aside>
+
+<main class="flex-1 tex-paper p-6 md:p-12 overflow-y-auto shadow-[inset_15px_0_20px_-10px_rgba(0,0,0,0.1)] relative">
+
+<header class="mb-10 border-b border-theme-line pb-6 relative"><a href="日志列表页.html" class="back-link"><i class="ph ph-arrow-left"></i> 返回日志列表</a><h2 class="text-3xl font-bold text-theme-ink mb-3 font-serif">三十岁的第一个清晨</h2><div class="flex items-center gap-6 text-sm text-[#999] font-hand"><span class="flex items-center gap-1"><i class="ph ph-calendar-blank"></i> 2024年5月20日 辰时</span><span class="flex items-center gap-1"><i class="ph ph-folder"></i> 随笔</span><span class="flex items-center gap-1"><i class="ph ph-eye"></i> 365 阅</span></div><div class="flex items-center gap-4 mt-4"><div class="flex items-center gap-1 text-xs"><span class="article-seal article-seal-weather">晴</span><span class="text-[#999] font-hand text-xs ml-1">天气</span></div><div class="flex items-center gap-1 text-xs"><span class="article-seal article-seal-mood">宁</span><span class="text-[#999] font-hand text-xs ml-1">心情</span></div></div><div class="admin-only absolute top-0 right-0 flex gap-2"><a href="../admin/文章编辑.html" class="text-xs text-[#999] hover:text-theme-red transition-colors font-serif flex items-center gap-1"><i class="ph ph-pencil-simple"></i> 编辑</a></div></header>
+<article class="article-body mb-16"><p>今天阳光很好，透过窗帘照在书桌上。我泡了一杯龙井，坐在桌前发呆。三十岁了，总觉得应该写点什么来纪念这个日子，但当真正提起笔时，却又不知道从哪里开始。</p><p>十年前的我，一定想不到现在的自己会是这个样子。那时候觉得三十岁好遥远，遥远得像一个永远不会到来的未来。可是转眼间，它就这样悄无声息地站在了面前。</p><blockquote><p>"三十而立"，孔夫子说的。可什么是"立"呢？是事业有成？是成家立业？还是仅仅是一种内心的笃定？我想，对我来说，"立"大概就是知道自己想要什么，也知道自己不想要什么。</p></blockquote><p>我打开电脑里的旧照片文件夹，想整理一下过去十年的影像。看到二十岁生日那天拍的照片，青涩得让人发笑。那时候我刚来这座城市，对未来充满期待又夹杂着不安。照片里的我站在出租屋的阳台上，背后是一片灰蒙蒙的天际线。</p><p>翻到二十五岁那年的旅行照，相机从卡片机换成了第一台微单。那是我第一次独自去旅行，在云南的古城里漫无目的地走了三天。那些照片拍得很烂，过曝的、虚焦的、构图奇怪的，但我一张都不舍得删。</p><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=400&fit=crop" alt="老街照片" onerror="this.style.display='none'"><p class="image-caption">老街转角的那家咖啡店，如今已经不在了</p><p>我想我已经找到了"立"的答案。不是成就，不是地位，而是在纷繁的世界里，有一方属于自己的小小庭院。可以安放回忆，可以记录当下，可以期待未来。</p><p>这就是我建这个博客的原因。</p></article>
+<section class="comment-section"><h3 class="comment-section-title"><i class="ph ph-chat-circle-text text-theme-red"></i> 评论 <span class="text-sm text-[#999] font-hand font-normal">(2)</span></h3>
+<div class="comment-list"><div class="comment-item"><div class="comment-avatar">风</div><div class="comment-body"><div class="comment-header"><span class="comment-author">清风徐来</span><span class="comment-time">2天前</span></div><p class="comment-text">写得太好了。"立"不是成就，而是一种内心的笃定——深有同感。祝三十岁快乐！</p><button class="comment-reply-btn admin-only" onclick="this.nextElementSibling.classList.toggle('open')">回复</button><div class="admin-reply-box admin-only"><textarea class="letter-paper h-16 text-sm" placeholder="写下回复..."></textarea><button class="btn btn-primary btn-sm mt-2">发送</button></div><div class="card-comment admin-only mt-2 ml-2"><span class="font-calligraphy text-xs text-theme-red block">主人回复</span><p class="font-hand text-[#5d5d5d] text-sm mt-1 mb-0">谢谢！一起努力。</p></div></div></div>
+<div class="comment-item"><div class="comment-avatar">云</div><div class="comment-body"><div class="comment-header"><span class="comment-author">云中鹤</span><span class="comment-time">5天前</span></div><p class="comment-text">照片拍得真不错，尤其喜欢老街那张。我也在整理旧照片，同感啊！</p></div></div></div>
+<div class="card p-6">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-4">
+<input type="text" class="comment-input" placeholder="昵称 *" required>
+<input type="email" class="comment-input" placeholder="邮箱 *" required>
+</div>
+<textarea class="letter-paper h-24 mb-3" placeholder="写下你的评论..."></textarea>
+<div class="flex justify-end"><button class="btn-post"></button></div>
+</div></section>
+</main>
+
+</div>
+
+<script>
+const sidebar = document.getElementById('sidebar');
+const backdrop = document.getElementById('mobile-backdrop');
+
+function toggleMobileMenu() {
+  const isClosed = sidebar.classList.contains('-translate-x-full');
+  if (isClosed) {
+    backdrop.classList.remove('hidden');
+    setTimeout(() => backdrop.classList.remove('opacity-0'), 10);
+    sidebar.classList.remove('-translate-x-full');
+  } else {
+    backdrop.classList.add('opacity-0');
+    sidebar.classList.add('-translate-x-full');
+    setTimeout(() => backdrop.classList.add('hidden'), 300);
+  }
+}
+</script>
+
+<div id="password-modal" class="modal-overlay hidden"><div class="modal-content modal-paper-bg"><h3 class="modal-title font-calligraphy">加盖私印</h3><p class="modal-subtitle">请输入主人印泥密码</p><input id="password-input" type="password" class="modal-password-input" placeholder="···" autocomplete="off"><div class="modal-actions"><button id="password-cancel" class="btn btn-outline">取消</button><button id="password-submit" class="btn btn-primary">盖印</button></div><p class="modal-hint">默认密码: TheChronicle2024</p></div></div>
+
+<script src="../assets/js/shared.js"></script>
+</body>
+</html>

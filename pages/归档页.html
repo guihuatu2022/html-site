@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>文章归档 - 岁月博客</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;700&amp;family=Ma+Shan+Zheng&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://npm.elemecdn.com/lxgw-wenkai-screen-webfont@1.1.0/style.css">
+<script src="https://unpkg.com/@phosphor-icons/web"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        theme: {
+          desk: '#cfc6b5',
+          spine: '#2c2a29',
+          paper: '#f7f1e3',
+          ink: '#2c2c2c',
+          red: '#8b3a3a',
+          line: '#dcd3b2'
+        }
+      },
+      fontFamily: {
+        serif: ['Noto Serif SC', 'Songti SC', 'serif'],
+        hand: ['LXGW Wenkai Screen', 'sans-serif'],
+        calli: ['Ma Shan Zheng', 'cursive'],
+      }
+    }
+  }
+}
+</script>
+<style>
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background-color: #b0a68f; border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background-color: #8b3a3a; }
+::selection { background-color: #8b3a3a; color: #fff; }
+
+.tex-spine {
+  background-color: #2c2a29;
+  background-image: url("data:image/svg+xml,%3Csvg width='4' height='4' viewBox='0 0 4 4' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 3h1v1H1V3zm2-2h1v1H3V1z' fill='%23000000' fill-opacity='0.2' fill-rule='evenodd'/%3E%3C/svg%3E");
+  box-shadow: inset -5px 0 15px rgba(0,0,0,0.3);
+}
+.tex-paper {
+  background-color: #f7f1e3;
+  background-image: url("data:image/svg+xml/%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+}
+</style>
+<link rel="stylesheet" href="../assets/css/shared.css">
+<style>
+.mobile-header-fix {
+  display: flex !important;
+}
+@media (min-width: 768px) {
+  .mobile-header-fix {
+    display: none !important;
+  }
+}
+
+.timeline { position: relative; }
+.timeline::before {
+  content: "";
+  position: absolute;
+  left: 100px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: linear-gradient(to bottom,
+    transparent 0%,
+    var(--line-color) 6%,
+    var(--line-color) 94%,
+    transparent 100%);
+}
+
+.year-marker {
+  font-family: var(--font-calli);
+  font-size: 2.5rem;
+  color: var(--accent-color);
+  margin: 2.5rem 0 1.75rem 0;
+  position: relative;
+  display: flex;
+  align-items: center;
+  letter-spacing: 0.1em;
+}
+.year-marker::before {
+  content: "";
+  width: 14px;
+  height: 14px;
+  background: var(--accent-color);
+  border-radius: 50%;
+  position: absolute;
+  left: 93px;
+  z-index: 2;
+  box-shadow: 0 0 0 5px var(--paper-color);
+}
+.year-marker span {
+  margin-left: 140px;
+  font-size: 2.2rem;
+}
+
+.day-group {
+  display: flex;
+  margin-bottom: 1.75rem;
+  position: relative;
+  align-items: flex-start;
+}
+
+.date-col {
+  width: 100px;
+  text-align: right;
+  padding-right: 28px;
+  font-family: var(--font-serif);
+  color: var(--text-main);
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  position: relative;
+}
+
+.day-num {
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--text-main);
+  font-family: var(--font-serif);
+  font-variant-numeric: tabular-nums;
+}
+
+.month-label {
+  font-size: 0.75rem;
+  color: var(--accent-color);
+  margin-top: 2px;
+  font-family: var(--font-hand);
+  letter-spacing: 0.08em;
+  opacity: 0.8;
+}
+
+.day-group::after {
+  content: "";
+  position: absolute;
+  left: 97px;
+  top: 6px;
+  width: 6px;
+  height: 6px;
+  background: #dcd3b2;
+  border-radius: 50%;
+  z-index: 2;
+}
+.day-group.today::after {
+  background: var(--accent-color);
+  box-shadow: 0 0 0 3px rgba(139,58,58,0.12);
+}
+
+.day-entries {
+  flex: 1;
+  min-width: 0;
+  padding-left: 1.5rem;
+}
+
+.archive-item {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding: 0.6rem 0.75rem;
+  margin-bottom: 6px;
+  border-radius: var(--radius-md);
+  transition: all var(--transition-base);
+  background: rgba(255,255,255,0);
+}
+.archive-item:last-child { margin-bottom: 0; }
+.archive-item:hover {
+  background: rgba(255,255,255,0.55);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+
+.time-tag {
+  font-family: var(--font-calli);
+  font-size: 0.95rem;
+  color: var(--accent-color);
+  width: 42px;
+  flex-shrink: 0;
+  opacity: 0.7;
+  text-align: center;
+}
+
+.type-icon {
+  color: #bfa57d;
+  font-size: 1.05rem;
+  flex-shrink: 0;
+  margin-right: 2px;
+  opacity: 0.8;
+}
+
+.entry-title {
+  font-family: var(--font-hand);
+  font-size: 1.15rem;
+  color: var(--text-main);
+  flex: 1;
+  cursor: pointer;
+  transition: color var(--transition-base);
+  text-decoration: none;
+  font-weight: 500;
+}
+.archive-item:hover .entry-title { color: var(--accent-color); }
+
+.entry-category {
+  font-size: 0.72rem;
+  color: var(--text-hint);
+  font-family: var(--font-hand);
+  flex-shrink: 0;
+  opacity: 0.55;
+  padding-left: 0.5rem;
+}
+
+.private-tag {
+  font-size: 0.65rem;
+  color: var(--accent-color);
+  font-family: var(--font-hand);
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  opacity: 0.6;
+}
+.private-tag i { font-size: 0.65rem; }
+
+.day-group.entry-private {
+  opacity: 0.55;
+}
+.day-group.entry-private:hover { opacity: 0.75; }
+
+.stats-capsule {
+  display: inline-block;
+  padding: 2px 10px;
+  background: rgba(139,58,58,0.06);
+  color: var(--accent-color);
+  border-radius: var(--radius-pill);
+  font-size: 0.8rem;
+  font-family: var(--font-hand);
+  margin-left: 10px;
+}
+
+.expand-hint {
+  text-align: center;
+  padding: 1.5rem 0 0.5rem;
+  font-family: var(--font-hand);
+  font-size: 0.85rem;
+  color: #c0b8a8;
+  cursor: pointer;
+  transition: color var(--transition-base);
+}
+.expand-hint:hover { color: var(--accent-color); }
+.expand-hint i { transition: transform var(--transition-base); }
+.expand-hint:hover i { transform: translateY(2px); }
+
+@media (max-width: 768px) {
+  .timeline { padding-left: 8px; }
+  .timeline::before { left: 62px; }
+  .year-marker::before { left: 55px; }
+  .date-col { width: 58px; padding-right: 14px; }
+  .day-group::after { left: 56px; }
+  .day-num { font-size: 1.35rem; }
+  .year-marker span { margin-left: 88px; font-size: 1.6rem; }
+  .archive-item { flex-wrap: wrap; }
+  .entry-category { padding-left: 0; }
+}
+</style>
+</head>
+<body class="bg-theme-desk font-serif text-theme-ink flex justify-center min-h-screen md:p-8">
+
+<div class="w-full max-w-[1200px] flex flex-col md:flex-row md:shadow-[0_20px_50px_rgba(0,0,0,0.2)] relative md:min-h-[85vh] overflow-hidden md:overflow-visible bg-theme-paper">
+
+<header class="mobile-header-fix md:hidden flex items-center justify-between p-4 tex-spine text-[#dcd3b2] shadow-md relative z-30 shrink-0">
+  <button onclick="toggleMobileMenu()" class="p-1 focus:outline-none"><i class="ph ph-list text-2xl"></i></button>
+  <h1 class="font-calli text-2xl tracking-widest absolute left-1/2 -translate-x-1/2 mt-1">三十而立</h1>
+  <button onclick="showPasswordModal()" class="seal-btn w-7 h-7 border border-theme-red text-theme-red bg-theme-red/10 flex items-center justify-center text-[10px] font-bold focus:outline-none transition-colors">主</button>
+</header>
+
+<div id="mobile-backdrop" onclick="toggleMobileMenu()" class="fixed inset-0 bg-black/60 z-40 hidden opacity-0 transition-opacity duration-300 md:hidden"></div>
+
+<aside id="sidebar" class="fixed md:static inset-y-0 left-0 z-50 w-[240px] shrink-0 tex-spine text-gray-300 flex flex-col transform -translate-x-full md:translate-x-0 transition-transform duration-300 shadow-2xl md:shadow-none">
+  
+  <button class="md:hidden absolute top-5 right-5 text-gray-400 hover:text-white" onclick="toggleMobileMenu()">
+    <i class="ph ph-x text-2xl"></i>
+  </button>
+
+  <div class="px-6 py-8 border-b border-gray-700/30 flex flex-col items-center justify-center shrink-0">
+    <div class="flex items-center justify-between w-full mb-3">
+      <h1 class="font-calli text-3xl text-[#e8e8e8] opacity-90 drop-shadow-md tracking-widest">三十而立</h1>
+      <button onclick="showPasswordModal()" title="点击盖印" class="seal-btn hidden md:flex w-8 h-8 border-2 border-theme-red text-theme-red bg-theme-red/10 items-center justify-center text-xs font-bold rounded-sm shadow-sm transition-colors cursor-pointer select-none">主</button>
+    </div>
+    
+    <div class="w-full text-center mb-1">
+      <p class="text-xs text-[#a8a8a8] tracking-[0.4em] font-hand opacity-90">记录 · 沉淀 · 回忆</p>
+    </div>
+
+    <p class="mt-3 text-[10px] text-gray-500 tracking-[0.3em] uppercase font-serif opacity-50 w-full text-center border-t border-gray-700/30 pt-2">The Chronicle</p>
+  </div>
+
+  <nav class="flex-1 py-6 px-5 overflow-y-auto">
+    <ul class="space-y-2">
+      <li><a href="首页.html" class="nav-link"><i class="ph ph-house"></i><span class="menu-item-text">博客首页</span></a></li>
+      <li><a href="日志列表页.html" class="nav-link"><i class="ph ph-pen-nib"></i><span class="menu-item-text">岁月日志</span></a></li>
+      <li><a href="相册列表页.html" class="nav-link"><i class="ph ph-image"></i><span class="menu-item-text">生活相册</span></a></li>
+      <li><a href="网盘列表页.html" class="nav-link"><i class="ph ph-hard-drives"></i><span class="menu-item-text">个人网盘</span></a></li>
+      <li><a href="常用导航页.html" class="nav-link"><i class="ph ph-compass"></i><span class="menu-item-text">常用导航</span></a></li>
+      <li><a href="归档页.html" class="nav-link active"><i class="ph ph-archive"></i><span class="menu-item-text">文章归档</span></a></li>
+      <li><a href="留言板.html" class="nav-link"><i class="ph ph-envelope-simple"></i><span class="menu-item-text">访客留言</span></a></li>
+      <li class="admin-menu-item nav-divider"></li>
+      <li class="admin-menu-item"><a href="待办.html" class="nav-link admin-nav-link"><i class="ph ph-check-square-offset"></i><span class="menu-item-text">我的待办</span></a></li>
+      <li class="admin-menu-item"><a href="../admin/仪表盘.html" class="nav-link admin-nav-link"><i class="ph ph-gear"></i><span class="menu-item-text">后台管理</span></a></li>
+    </ul>
+  </nav>
+
+  <div class="p-5 text-[10px] text-gray-500 text-center border-t border-gray-700/20 shrink-0">
+    <p>&copy; 2024 - 2064</p>
+    <p class="mt-1 font-serif opacity-70">朝花夕拾 · 岁月静好</p>
+  </div>
+</aside>
+
+<main class="flex-1 tex-paper p-6 md:p-12 overflow-y-auto shadow-[inset_15px_0_20px_-10px_rgba(0,0,0,0.1)]">
+<header class="page-header"><div class="page-header-title"><h2>岁月长卷</h2><p>按时间检索所有记录 <span class="stats-capsule">共 20 篇</span></p></div><div class="page-header-seal"><span class="seal-bg-text">Archive</span><div class="seal-icon" style="transform:rotate(-6deg)">年</div></div></header>
+
+<div class="filter-bar"><div class="filter-group"><span class="filter-label">分类索引：</span><span class="index-link active" data-filter="all">全部</span><span class="filter-separator">/</span><span class="index-link" data-filter="随笔">随笔</span><span class="filter-separator">/</span><span class="index-link" data-filter="技术">技术</span><span class="filter-separator">/</span><span class="index-link" data-filter="游记">游记</span><span class="filter-separator">/</span><span class="index-link" data-filter="摄影">摄影</span></div></div>
+
+<div class="timeline">
+
+<div class="year-marker"><span>二零二四</span></div>
+
+<div class="day-group today">
+<div class="date-col"><span class="day-num">二十</span><span class="month-label">五月</span></div>
+<div class="day-entries">
+<div class="archive-item" data-category="随笔"><span class="time-tag">辰</span><span class="type-icon"><i class="ph ph-pen-nib"></i></span><a href="日志详情页.html" class="entry-title">三十岁的第一个清晨</a></div>
+<div class="archive-item" data-category="摄影"><span class="time-tag">未</span><span class="type-icon"><i class="ph ph-image"></i></span><a href="相册详情页.html" class="entry-title">胶片里的老街</a></div>
+</div></div>
+
+<div class="day-group entry-private">
+<div class="date-col"><span class="day-num">十五</span><span class="month-label">五月</span></div>
+<div class="day-entries">
+<div class="archive-item" data-category="技术"><span class="time-tag">子</span><span class="type-icon"><i class="ph ph-code"></i></span><span class="entry-title">搭建个人博客的心得</span><span class="private-tag"><i class="ph ph-lock"></i> 私密</span></div>
+</div></div>
+
+<div class="day-group">
+<div class="date-col"><span class="day-num">廿八</span><span class="month-label">四月</span></div>
+<div class="day-entries">
+<div class="archive-item" data-category="摄影"><span class="time-tag">申</span><span class="type-icon"><i class="ph ph-image"></i></span><span class="entry-title">胶片里的老街</span></div>
+</div></div>
+
+<div class="year-marker"><span>二零二三</span></div>
+
+<div class="day-group">
+<div class="date-col"><span class="day-num">三十</span><span class="month-label">腊月</span></div>
+<div class="day-entries">
+<div class="archive-item" data-category="随笔"><span class="time-tag">亥</span><span class="type-icon"><i class="ph ph-pen-nib"></i></span><span class="entry-title">告别二零二三</span></div>
+</div></div>
+
+<div class="day-group">
+<div class="date-col"><span class="day-num">初一</span><span class="month-label">十月</span></div>
+<div class="day-entries">
+<div class="archive-item" data-category="技术"><span class="time-tag">午</span><span class="type-icon"><i class="ph ph-code"></i></span><span class="entry-title">从零搭建 NAS 的碎碎念</span></div>
+</div></div>
+
+<div class="expand-hint" onclick="showToast('更早的年份将在对接 D1 后动态加载')"><i class="ph ph-caret-double-down mr-1"></i> 更早的岁月</div>
+
+</div>
+</main></div>
+
+<div id="password-modal" class="modal-overlay hidden"><div class="modal-content modal-paper-bg"><h3 class="modal-title font-calligraphy">加盖私印</h3><p class="modal-subtitle">请输入主人印泥密码</p><input id="password-input" type="password" class="modal-password-input" placeholder="···" autocomplete="off"><div class="modal-actions"><button id="password-cancel" class="btn btn-outline">取消</button><button id="password-submit" class="btn btn-primary">盖印</button></div><p class="modal-hint">默认密码: TheChronicle2024</p></div></div>
+
+<script>
+const sidebar = document.getElementById('sidebar');
+const backdrop = document.getElementById('mobile-backdrop');
+
+function toggleMobileMenu() {
+  const isClosed = sidebar.classList.contains('-translate-x-full');
+  if (isClosed) {
+    backdrop.classList.remove('hidden');
+    setTimeout(() => backdrop.classList.remove('opacity-0'), 10);
+    sidebar.classList.remove('-translate-x-full');
+  } else {
+    backdrop.classList.add('opacity-0');
+    sidebar.classList.add('-translate-x-full');
+    setTimeout(() => backdrop.classList.add('hidden'), 300);
+  }
+}
+
+/* 分类筛选 */
+(function(){
+  var links = document.querySelectorAll('.index-link[data-filter]');
+  var allItems = document.querySelectorAll('.archive-item[data-category]');
+  links.forEach(function(link){
+    link.addEventListener('click', function(e){
+      e.preventDefault();
+      var cat = this.getAttribute('data-filter');
+      links.forEach(function(l){ l.classList.remove('active'); });
+      this.classList.add('active');
+      allItems.forEach(function(item){
+        if(cat === 'all' || item.getAttribute('data-category') === cat){
+          item.style.display = '';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+      /* 隐藏空的day-group */
+      document.querySelectorAll('.day-group').forEach(function(dg){
+        var visibleItems = 0;
+        dg.querySelectorAll('.archive-item[data-category]').forEach(function(i){
+          if(i.style.display !== 'none') visibleItems++;
+        });
+        dg.style.display = visibleItems === 0 ? 'none' : '';
+      });
+      /* 隐藏空的year-marker */
+      document.querySelectorAll('.year-marker').forEach(function(ym){
+        var nextEl = ym.nextElementSibling;
+        var hasVisible = false;
+        while(nextEl && !nextEl.classList.contains('year-marker') && !nextEl.classList.contains('expand-hint')){
+          if(nextEl.classList.contains('day-group') && nextEl.style.display !== 'none') hasVisible = true;
+          nextEl = nextEl.nextElementSibling;
+        }
+        ym.style.display = hasVisible ? '' : 'none';
+      });
+    });
+  });
+})();
+</script>
+<script src="../assets/js/shared.js"></script></body></html>
