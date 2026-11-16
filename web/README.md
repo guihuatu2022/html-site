@@ -1,39 +1,27 @@
-# PHP Blog Web Foundation
+# PHP 单用户博客重构
 
-This directory is the new application foundation for the rewrite of the static personal site into a lightweight PHP blog system.
+原项目 `admin/`、`pages/`、`assets/` 保留为视觉与交互参考。新应用位于 `web/`。
 
-## Architecture goals
+## 当前阶段
 
-- Keep the current HTML prototype as a visual reference only.
-- Build the real application under `web/` without disturbing the original static pages.
-- Support a simple blog flow:
-  - front-end home page
-  - content list/details pages
-  - admin area
-  - OpenList file access integration
-- Prefer simple PHP + PDO + JSON style, avoiding unnecessary framework complexity.
+当前包含 PHP 入口、MySQL/MariaDB 与 SQLite PDO 连接、首次安装向导、管理员账号安全哈希、文章数据层、基础文章列表/详情、后台登录和文章新增/编辑的基础流程。OpenList 客户端仍需接入真实实例验证后才能视为可用；请勿把当前原型端点当作生产能力。
 
-## Recommended runtime
+## 安装
 
-- PHP 8.2+
-- MySQL or MariaDB (primary)
-- SQLite support kept as fallback for local/dev environments
-- Apache or Nginx with rewrite rules to `public/index.php`
+1. 将仓库部署到支持 PHP 与 PDO 的主机，并确保 `web/` 下的配置、应用和存储目录不能被直接读取。
+2. 在浏览器打开 `/install.php`，填写数据库和管理员信息。
+3. 安装完成后进入 `/admin.php`。安装程序会拒绝重复安装。
+4. 生产环境请启用 HTTPS，设置安全目录权限，并及时升级仍在官方安全维护期内的 PHP 版本。
 
-## Directory layout
+MySQL/MariaDB 数据库需由主机面板预先创建；SQLite 则由安装程序创建文件。当前安装向导和数据库迁移仍是首版基础实现，发布前需在目标主机完成测试。
 
-- `config/` — application configuration
-- `app/` — PHP application classes
-- `public/` — web entry point and static assets
-- `storage/` — local files or SQLite DB placeholder
+## 重要安全说明
 
-## Quick start
+- 不要提交 `.env`、真实数据库凭证、OpenList Token 或 API 密钥。
+- 配置和运行数据应置于 Web 根目录之外，若主机不支持则必须用访问控制规则拒绝访问。
+- 公开内容默认只显示已发布且 `public` 的文章。密码保护内容必须由服务端验证后才能输出；私有内容只对管理员开放。
+- OpenList 实例 URL 应只配置可信地址，避免将管理端配置变成任意 URL 请求代理。
 
-1. Copy `.env.example` to `.env` and adjust values.
-2. Create the database and import the schema you need.
-3. Point your web server root to `web/public`.
-4. Visit `/` to confirm the bootstrap works.
+## 保留原型
 
-## Notes
-
-The project intentionally keeps the core logic plain and explicit so it can be extended gradually without over-engineering.
+重构不会覆盖仓库根目录现有的 `admin/`、`pages/` 和 `assets/`。新系统逐步迁移到 `web/`，并以现有 HTML 的复古纸张/书本风格作为视觉参考。

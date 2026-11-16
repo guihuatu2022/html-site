@@ -11,41 +11,35 @@ final class Database
     public function __construct(array $config)
     {
         $driver = strtolower((string) ($config['driver'] ?? 'mysql'));
-
         if ($driver === 'sqlite') {
-            $path = (string) ($config['sqlite_path'] ?? __DIR__ . '/../storage/database.sqlite');
-            $directory = dirname($path);
-            if (!is_dir($directory)) {
-                mkdir($directory, 0777, true);
+            $path = (string) ($config['sqlite_path'] ?? dirname(__DIR__) . '/storage/database.sqlite');
+            $dir = dirname($path);
+            if (!is_dir($dir) && !mkdir($dir, 0750, true) && !is_dir($dir)) {
+                throw new \RuntimeException('Cannot create SQLite storage directory.');
             }
             $this->pdo = new \PDO('sqlite:' . $path);
             $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+            $this->pdo->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_ASSOC);
             return;
         }
+        if ($driver !== 'mysql') {
+            throw new \InvalidArgumentException('Unsupported database driver.');
+        }
 
-        $host = (string) ($config['host'] ?? '127.0.0.1');
-        $port = (int) ($config['port'] ?? 3306);
-        $dbname = (string) ($config['name'] ?? 'html_site_blog');
-        $user = (string) ($config['user'] ?? 'root');
-        $password = (string) ($config['password'] ?? '');
-
-        $dsn = sprintf('mysql:host=%s;port=%d;dbname=%s;charset=utf8mb4', $host, $port, $dbname);
-        $this->pdo = new \PDO($dsn, $user, $password, [
+        $dsn = sprintf(
+            'mysql:host=%s;port=%d;dbname=%s;charset=utf8mb4',
+            (string) ($config['host'] ?? '127.0.0.1'),
+            (int) ($config['port'] ?? 3306),
+            (string) ($config['name'] ?? '')
+        );
+        $this->pdo = new \PDO($dsn, (string) ($config['user'] ?? ''), (string) ($config['password'] ?? ''), [
             \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
             \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
             \PDO::ATTR_EMULATE_PREPARES => false,
         ]);
     }
 
-    public function pdo(): \PDO
-    {
-        return $this->pdo;
-    }
-
-    public function exec(string $sql): bool
-    {
-        return $this->pdo->exec($sql) !== false;
-    }
+    public function pdo(): \PDO { return $this->pdo; }
 
     public function fetchOne(string $sql, array $params = []): ?array
     {
@@ -60,16 +54,5 @@ final class Database
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute($params);
         return $stmt->fetchAll();
-    }
-
-    public function tableExists(string $tableName): bool
-    {
-        if ($this->pdo->getAttribute(\PDO::ATTR_DRIVER_NAME) === 'sqlite') {
-            $result = $this->fetchOne("SELECT name FROM sqlite_master WHERE type='table' AND name = :name", ['name' => $tableName]);
-            return $result !== null;
-        }
-
-        $result = $this->fetchOne('SHOW TABLES LIKE :name', ['name' => $tableName]);
-        return $result !== null;
     }
 }

@@ -2,11 +2,14 @@
 
 declare(strict_types=1);
 
-return [
+$installedConfig = __DIR__ . '/installed.php';
+$installed = is_file($installedConfig) ? require $installedConfig : [];
+
+return array_replace_recursive([
     'app' => [
         'name' => env('APP_NAME', 'Guihuatu Blog'),
-        'env' => env('APP_ENV', 'development'),
-        'url' => env('APP_URL', 'http://localhost'),
+        'env' => env('APP_ENV', 'production'),
+        'url' => env('APP_URL', ''),
     ],
     'database' => [
         'driver' => env('DB_DRIVER', 'mysql'),
@@ -18,13 +21,9 @@ return [
         'sqlite_path' => env('DB_SQLITE_PATH', __DIR__ . '/../storage/database.sqlite'),
     ],
     'openlist' => [
-        'base_url' => rtrim(env('OPENLIST_BASE_URL', 'http://localhost:5244'), '/'),
+        'base_url' => rtrim((string) env('OPENLIST_BASE_URL', ''), '/'),
         'token' => env('OPENLIST_TOKEN', ''),
         'password' => env('OPENLIST_PASSWORD', ''),
         'root_path' => env('OPENLIST_ROOT_PATH', '/'),
     ],
-    'security' => [
-        'admin_user' => env('ADMIN_USERNAME', 'admin'),
-        'admin_password' => env('ADMIN_PASSWORD', 'change-me'),
-    ],
-];
+], is_array($installed) ? $installed : []);
