@@ -2,16 +2,15 @@
 
 declare(strict_types=1);
 
-$envFile = __DIR__ . '/.env';
-if (is_file($envFile) && is_readable($envFile)) {
-    foreach (file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) ?: [] as $line) {
+if (is_file(__DIR__ . '/.env') && is_readable(__DIR__ . '/.env')) {
+    foreach (file(__DIR__ . '/.env', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) ?: [] as $line) {
         $line = trim($line);
         if ($line === '' || str_starts_with($line, '#') || !str_contains($line, '=')) {
             continue;
         }
         [$key, $value] = explode('=', $line, 2);
         $key = trim($key);
-        $value = trim(trim($value), "\"'");
+        $value = trim($value, " \t\r\n\"'");
         if ($key !== '' && getenv($key) === false) {
             putenv($key . '=' . $value);
             $_ENV[$key] = $value;

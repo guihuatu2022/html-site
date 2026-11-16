@@ -12,40 +12,63 @@ final class Auth
     {
         $this->database = $database;
         if (session_status() === PHP_SESSION_NONE) {
-            $secure = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
-            session_set_cookie_params(['httponly' => true, 'secure' => $secure, 'samesite' => 'Lax', 'path' => '/']);
+            session_set_cookie_params([
+                'lifetime' => 0,
+                'path' => '/',
+                'secure' => (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'),
+                'httponly' => true,
+                'samesite' => 'Lax',
+            ]);
             session_start();
         }
     }
 
     public function attempt(string $username, string $password): bool
     {
-        $user = $this->database->fetchOne('SELECT id, username, password_hash FROM users WHERE username = :username', ['username' => $username]);
-        if (!$user || !password_verify($password, (string) $user['password_hash'])) return false;
+        $user = $this->database->fetchOne(
+            'SELECT id, username, password_hash FROM users WHERE username = :username',
+            ['username' => $username]
+        );
+
+        if ($user === null || !password_verify($password, (string) $user['password_hash'])) {
+            return false;
+        }
+
         session_regenerate_id(true);
         $_SESSION['user_id'] = (int) $user['id'];
         $_SESSION['username'] = (string) $user['username'];
+
         return true;
     }
 
     public function isLoggedIn(): bool
     {
-        return isset($_SESSION['user_id'], $_SESSION['username']);
+        return !empty($_SESSION['user_id']) && !empty($_SESSION['username']);
     }
 
     public function logout(): void
     {
         $_SESSION = [];
-        if (ini_get('session.use_cookies')) {
-            $params = session_get_cookie_params();
-            setcookie(session_name(), '', time() - 42000, $params['path'], $params['domain'], $params['secure'], $params['httponly']);
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            session_destroy();
         }
-        session_destroy();
+    }
+
+    public function requireLogin(): bool
+    {
+        if ($this->isLoggedIn()) {
+            return true;
+        }
+
+        http_response_code(401);
+        return false;
     }
 
     public function csrfToken(): string
     {
-        if (empty($_SESSION['csrf_token'])) $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        if (empty($_SESSION['csrf_token'])) {
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        }
         return (string) $_SESSION['csrf_token'];
     }
 

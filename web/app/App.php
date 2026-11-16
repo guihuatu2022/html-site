@@ -30,17 +30,20 @@ final class App
 
     public function databaseDsn(): string
     {
-        $driver = $this->config['database']['driver'] ?? 'mysql';
-
+        $driver = strtolower((string) ($this->config['database']['driver'] ?? 'mysql'));
         if ($driver === 'sqlite') {
-            return 'sqlite:' . $this->config['database']['sqlite_path'];
+            return 'sqlite:' . (string) ($this->config['database']['sqlite_path'] ?? __DIR__ . '/../storage/database.sqlite');
         }
 
-        $host = $this->config['database']['host'] ?? '127.0.0.1';
-        $port = $this->config['database']['port'] ?? 3306;
-        $name = $this->config['database']['name'] ?? 'html_site_blog';
-
+        $host = (string) ($this->config['database']['host'] ?? '127.0.0.1');
+        $port = (int) ($this->config['database']['port'] ?? 3306);
+        $name = (string) ($this->config['database']['name'] ?? 'html_site_blog');
         return sprintf('mysql:host=%s;port=%d;dbname=%s;charset=utf8mb4', $host, $port, $name);
+    }
+
+    public function database(): Database
+    {
+        return new Database($this->config['database'] ?? []);
     }
 
     public function openListClient(): OpenListClient
