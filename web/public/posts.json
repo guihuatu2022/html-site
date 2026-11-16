@@ -1,0 +1,17 @@
+<?php
+
+declare(strict_types=1);
+
+require __DIR__ . '/bootstrap.php';
+
+$app = require __DIR__ . '/bootstrap.php';
+$db = new App\Database($app->config('database', []));
+App\Installer::ensureSchema($db);
+App\Installer::ensureDefaults($db);
+
+$repo = new App\PostRepository($db);
+
+$posts = $repo->list('published', 10);
+
+header('Content-Type: application/json; charset=utf-8');
+echo json_encode(array_map(static fn (App\Post $post) => $post->toArray(), $posts), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
